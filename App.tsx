@@ -3,13 +3,17 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { useFonts } from 'expo-font'
-import { View } from 'moti'
-import { getStations } from './lib/api'
+import { ScrollView, View } from 'moti'
+import { getStations, getUser } from './lib/api'
 import NearbyStations from './components/NearbyStations'
-import { Station } from './lib/types'
+import { Station, UserData } from './lib/types'
+import Stations from './components/Stations'
+import Journeys from './components/Journeys'
+import { AppHeader } from './components/styled'
 
 export default function App() {
   const [stations, setStations] = useState<Station[]>([])
+  const [userData, setUserData] = useState<UserData>()
 
   const [loaded] = useFonts({
     Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
@@ -28,27 +32,33 @@ export default function App() {
       const location = await Location.getCurrentPositionAsync({})
 
       const stations = await getStations(location)
+      const userData = await getUser(stations)
       setStations(stations)
+      setUserData(userData)
     }
 
     get()
   }, [])
 
-  if (!loaded) {
+  if (!loaded || !userData) {
     return null
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View
-        from={{ opacity: 0, translateY: -20 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'spring' }}
-      >
-        <Text style={styles.header}>Sylkle</Text>
-      </View>
-      <NearbyStations stations={stations} />
       <StatusBar style="auto" />
+      <ScrollView>
+        <View
+          from={{ opacity: 0, translateY: -20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'spring' }}
+        >
+          <AppHeader style={styles.header}>Sylkle</AppHeader>
+        </View>
+        <Stations stations={userData!.stations} />
+        <Journeys journeys={userData!.journeys} />
+        <NearbyStations stations={stations} />
+      </ScrollView>
     </SafeAreaView>
   )
 }

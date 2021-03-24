@@ -26,3 +26,29 @@ export type Location = {
     longitude: number
   }
 }
+
+export type UserData = {
+  stations: Station[]
+  journeys: UserJourney[]
+}
+
+export type UserJourney = {
+  fromStation: Station
+  toStation: Station
+}
+
+export type SanityStation = {
+  name: string
+  id: string
+}
+
+export type SanityJourney = {
+  fromStation: string
+  toStation: string
+}
+
+export type User = {
+  name: string
+  stations: SanityStation[]
+  journeys: SanityJourney[]
+}

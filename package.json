@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@sanity/client": "^2.2.6",
     "expo": "~40.0.0",
     "expo-font": "~8.4.0",
     "expo-location": "~10.0.0",
@@ -17,7 +18,8 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-reanimated": "^2.0.0-rc.0",
-    "react-native-web": "~0.13.12"
+    "react-native-web": "~0.13.12",
+    "styled-components": "^5.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",

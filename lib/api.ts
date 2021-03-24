@@ -1,11 +1,56 @@
-import { Location, Station } from 'lib/types'
+import { Location, Station, User } from './types'
+import { token } from '../token'
 import { getDistanceFromLatLng } from './helpers'
+const sanityClient = require('@sanity/client')
+
+const client = sanityClient({
+  projectId: 'am0de4ur',
+  dataset: 'production',
+  token: token,
+  useCdn: true,
+})
 
 const headers = {
   'Client-Identifier': 'krawaller-sylkle',
 }
 
 const BASE_URL = 'https://gbfs.urbansharing.com/oslobysykkel.no'
+
+export async function getUser(stations: Station[]) {
+  const query = '*[_type == "user" && name == "Hannes"]'
+
+  return await client.fetch(query).then((user: User[]) => {
+    const userStations = user[0].stations.map((userStation) => {
+      const matchedStation = stations.find(
+        (station) => station.station_id === userStation.id
+      )
+      return {
+        ...userStation,
+        ...matchedStation,
+      }
+    })
+
+    const userJourneys = user[0].journeys.map((userJourney) => {
+      const fromStation = stations.find(
+        (station) => station.station_id === userJourney.fromStation
+      )
+
+      const toStation = stations.find(
+        (station) => station.station_id === userJourney.toStation
+      )
+
+      return {
+        fromStation,
+        toStation,
+      }
+    })
+
+    return {
+      stations: userStations,
+      journeys: userJourneys,
+    }
+  })
+}
 
 export async function getStations(location: Location) {
   const result = await fetch(`${BASE_URL}/station_information.json`, {
@@ -31,7 +76,6 @@ export async function getStations(location: Location) {
       }
     })
     .sort((a: Station, b: Station) => a.distance > b.distance)
-    .slice(0, 3)
 
   return parsedStations
 }
