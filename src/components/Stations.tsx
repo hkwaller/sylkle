@@ -1,11 +1,16 @@
 import React, { useState } from 'react'
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
+import {
+  FlatList,
+  Linking,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native'
 import { View } from '@motify/components'
 import { Station as StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { colors, fancyColors, stationWidth } from 'src/lib/constants'
+import { stationWidth } from 'src/lib/constants'
 import Spacer from './Spacer'
 
 type Props = {
@@ -17,11 +22,9 @@ function Stations({ stations }: Props) {
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
-    const viewSize = event.nativeEvent.layoutMeasurement
+    const index = Math.floor(contentOffset.x / (stationWidth + 20))
 
-    const index = Math.floor(contentOffset.x / (viewSize.width + 20))
-
-    setActiveIndex(Math.max(index, 0))
+    if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
 
   return (
@@ -31,8 +34,8 @@ function Stations({ stations }: Props) {
         keyExtractor={(item: StationType) => item.station_id}
         data={stations}
         horizontal
-        snapToInterval={stationWidth + 20}
         pagingEnabled
+        snapToInterval={stationWidth + 20}
         decelerationRate="fast"
         onScroll={onScroll}
         showsHorizontalScrollIndicator={false}
@@ -47,6 +50,11 @@ function Stations({ stations }: Props) {
         title="Gå hit"
         color={stations[activeIndex].color}
         width={stationWidth}
+        onPress={() =>
+          Linking.openURL(
+            `oslobysykkel:stations/${stations[activeIndex].station_id}`
+          )
+        }
       />
     </ListWrapper>
   )

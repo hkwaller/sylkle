@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {
   FlatList,
+  Linking,
   NativeScrollEvent,
   NativeSyntheticEvent,
   Text,
@@ -19,7 +20,7 @@ type Props = {
 
 function Journeys({ journeys }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [flipped, setFlipped] = useState(false)
+  const [flipped, setFlipped] = useState(-1)
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
@@ -30,7 +31,7 @@ function Journeys({ journeys }: Props) {
 
   return (
     <ListWrapper>
-      <Header style={{ marginVertical: 16 }}>Strekninger</Header>
+      <Header style={{ marginBottom: 16 }}>Strekninger</Header>
       <FlatList
         keyExtractor={(item: UserJourney) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
@@ -49,7 +50,7 @@ function Journeys({ journeys }: Props) {
             <Journey
               journey={item}
               index={index}
-              isFlipped={activeIndex === index && flipped}
+              isFlipped={index === flipped}
             />
           )
         }}
@@ -62,11 +63,23 @@ function Journeys({ journeys }: Props) {
         }}
       >
         <RoundedButton
-          onPress={() => setFlipped(!flipped)}
+          onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
           icon={<SwatchIcon />}
           color={journeys[activeIndex].color}
         />
-        <RoundedButton title="Dra hit" color={journeys[activeIndex].color} />
+        <RoundedButton
+          title="Dra hit"
+          color={journeys[activeIndex].color}
+          onPress={() =>
+            Linking.openURL(
+              `oslobysykkel:stations/${
+                journeys[activeIndex][
+                  flipped === activeIndex ? 'toStation' : 'fromStation'
+                ].station_id
+              }`
+            )
+          }
+        />
       </RowView>
     </ListWrapper>
   )

@@ -59,9 +59,9 @@ export default function App() {
         </View>
         <ScrollView contentContainerStyle={{ paddingLeft: 20 }}>
           <Spacer spacing={20} />
-          <Stations stations={userData!.stations} />
-          <Spacer spacing={40} />
           <Journeys journeys={userData!.journeys} />
+          <Spacer spacing={40} />
+          <Stations stations={userData!.stations} />
           <Spacer spacing={40} />
           <NearbyStations stations={stations} />
         </ScrollView>
