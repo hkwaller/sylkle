@@ -1,7 +1,7 @@
 import React from 'react'
 import { FlatList, Text } from 'react-native'
 import { View } from '@motify/components'
-import { Station } from '../lib/types'
+import { Station } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 
 type Props = {

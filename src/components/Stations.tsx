@@ -1,9 +1,9 @@
 import React from 'react'
-import { FlatList, Text } from 'react-native'
-import { Station as StationType } from '../lib/types'
+import { FlatList } from 'react-native'
+import { View } from '@motify/components'
+import { Station as StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
-import { View } from 'moti'
 
 type Props = {
   stations: StationType[]

@@ -1,8 +1,8 @@
 import React from 'react'
 import { FlatList, Text } from 'react-native'
 import { View } from '@motify/components'
-import { Station, UserJourney } from '../lib/types'
-import { Header, ListWrapper } from './styled'
+import { UserJourney } from 'src/lib/types'
+import { ListWrapper, Header } from './styled'
 
 type Props = {
   journeys: UserJourney[]

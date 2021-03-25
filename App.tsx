@@ -4,12 +4,12 @@ import { SafeAreaView, StyleSheet, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { useFonts } from 'expo-font'
 import { ScrollView, View } from 'moti'
-import { getStations, getUser } from './lib/api'
-import NearbyStations from './components/NearbyStations'
-import { Station, UserData } from './lib/types'
-import Stations from './components/Stations'
-import Journeys from './components/Journeys'
-import { AppHeader } from './components/styled'
+import { getStations, getUser } from './src/lib/api'
+import NearbyStations from './src/components/NearbyStations'
+import { Station, UserData } from './src/lib/types'
+import Stations from './src/components/Stations'
+import Journeys from './src/components/Journeys'
+import { AppHeader } from './src/components/styled'
 
 export default function App() {
   const [stations, setStations] = useState<Station[]>([])
@@ -53,7 +53,7 @@ export default function App() {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'spring' }}
         >
-          <AppHeader style={styles.header}>Sylkle</AppHeader>
+          <AppHeader>Sylkle</AppHeader>
         </View>
         <Stations stations={userData!.stations} />
         <Journeys journeys={userData!.journeys} />
@@ -70,9 +70,5 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 20,
     marginTop: 60,
-  },
-  header: {
-    fontFamily: 'Sansation',
-    fontSize: 24,
   },
 })

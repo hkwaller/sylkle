@@ -1,25 +1,27 @@
 import React from 'react'
-import { Text, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { View } from '@motify/components'
-import { Station as StationType } from '../lib/types'
+import { fancyColorsArray } from 'src/lib/constants'
+import { Station as StationType } from 'src/lib/types'
+import { Text } from './styled'
 
 type Props = {
   station: StationType
   index: number
 }
 
-const backgroundColors = ['#BDD5D1', '#DFC8B9']
-
 function Station({ station, index }: Props) {
   return (
     <View
-      style={[styles.container, { backgroundColor: backgroundColors[index] }]}
+      style={[styles.container, { backgroundColor: fancyColorsArray[index] }]}
       from={{ translateX: -100 * (index + 1) }}
       animate={{ translateX: 0 }}
     >
-      <Text>{station.name}</Text>
-      <Text>{station.distance}m</Text>
-      <Text>
+      <Text white>{station.name}</Text>
+      <Text white big>
+        {station.distance}m
+      </Text>
+      <Text white medium>
         {station.num_bikes_available} | {station.num_docks_available}
       </Text>
     </View>
@@ -29,6 +31,7 @@ function Station({ station, index }: Props) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
+    borderRadius: 6,
   },
 })
 

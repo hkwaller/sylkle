@@ -1,5 +1,5 @@
 import { Location, Station, User } from './types'
-import { token } from '../token'
+import { token } from '../../token'
 import { getDistanceFromLatLng } from './helpers'
 const sanityClient = require('@sanity/client')
 
