@@ -15,6 +15,7 @@ function NearbyStations({ stations }: Props) {
       <FlatList
         keyExtractor={(item: Station) => item.station_id}
         data={stations}
+        showsHorizontalScrollIndicator={false}
         horizontal
         renderItem={({ item, index }) => {
           return (

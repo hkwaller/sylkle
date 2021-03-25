@@ -10,6 +10,8 @@ import { Station, UserData } from './src/lib/types'
 import Stations from './src/components/Stations'
 import Journeys from './src/components/Journeys'
 import { AppHeader } from './src/components/styled'
+import Spacer from 'src/components/Spacer'
+import { colors } from 'src/lib/constants'
 
 export default function App() {
   const [stations, setStations] = useState<Station[]>([])
@@ -30,7 +32,6 @@ export default function App() {
       }
 
       const location = await Location.getCurrentPositionAsync({})
-
       const stations = await getStations(location)
       const userData = await getUser(stations)
       setStations(stations)
@@ -45,30 +46,34 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <>
       <StatusBar style="auto" />
-      <ScrollView>
+      <SafeAreaView style={styles.container}>
         <View
           from={{ opacity: 0, translateY: -20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'spring' }}
+          style={{ paddingLeft: 20 }}
         >
           <AppHeader>Sylkle</AppHeader>
         </View>
-        <Stations stations={userData!.stations} />
-        <Journeys journeys={userData!.journeys} />
-        <NearbyStations stations={stations} />
-      </ScrollView>
-    </SafeAreaView>
+        <ScrollView contentContainerStyle={{ paddingLeft: 20 }}>
+          <Spacer spacing={20} />
+          <Stations stations={userData!.stations} />
+          <Spacer spacing={40} />
+          <Journeys journeys={userData!.journeys} />
+          <Spacer spacing={40} />
+          <NearbyStations stations={stations} />
+        </ScrollView>
+      </SafeAreaView>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    margin: 20,
+    backgroundColor: colors.white,
     marginTop: 60,
+    flex: 1,
   },
 })

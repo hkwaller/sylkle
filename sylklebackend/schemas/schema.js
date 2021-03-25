@@ -39,6 +39,8 @@ export default createSchema({
       fields: [
         { name: 'name', type: 'string' },
         { name: 'id', type: 'string' },
+        { name: 'color', type: 'string' },
+        { name: 'icon', type: 'string' },
       ],
     },
     {
@@ -47,11 +49,19 @@ export default createSchema({
       type: 'object',
       fields: [
         {
+          name: 'name',
+          type: 'string',
+        },
+        {
           name: 'fromStation',
           type: 'string',
         },
         {
           name: 'toStation',
+          type: 'string',
+        },
+        {
+          name: 'color',
           type: 'string',
         },
       ],

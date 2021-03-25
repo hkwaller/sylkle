@@ -1,4 +1,4 @@
-import { Location, Station, User } from './types'
+import { Location, Station, Status, User } from './types'
 import { token } from '../../token'
 import { getDistanceFromLatLng } from './helpers'
 const sanityClient = require('@sanity/client')
@@ -40,6 +40,7 @@ export async function getUser(stations: Station[]) {
       )
 
       return {
+        ...userJourney,
         fromStation,
         toStation,
       }
@@ -61,12 +62,11 @@ export async function getStations(location: Location) {
 
   const parsedStations = await result.data.stations
     .map((station: Station, index: number) => {
-      const stationStatus = statusResult.data.stations[index]
+      const stationStatus: Status = statusResult.data.stations[index]
 
       return {
         ...station,
-        num_bikes_available: stationStatus.num_bikes_available,
-        num_docks_available: stationStatus.num_docks_available,
+        ...stationStatus,
         distance: getDistanceFromLatLng(
           station.lat,
           station.lon,

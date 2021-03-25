@@ -6,9 +6,9 @@ export type Station = {
   lon: number
   capacity: number
   distance: number
-  num_bikes_available: number
-  num_docks_available: number
-}
+  color: string
+  icon: string
+} & Status
 
 export type Status = {
   station_id: number
@@ -35,11 +35,14 @@ export type UserData = {
 export type UserJourney = {
   fromStation: Station
   toStation: Station
+  color: string
+  name: string
 }
 
 export type SanityStation = {
   name: string
   id: string
+  color: string
 }
 
 export type SanityJourney = {

@@ -1,36 +1,73 @@
-import React from 'react'
-import { FlatList, Text } from 'react-native'
+import React, { useState } from 'react'
+import {
+  FlatList,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  Text,
+} from 'react-native'
 import { View } from '@motify/components'
 import { UserJourney } from 'src/lib/types'
-import { ListWrapper, Header } from './styled'
+import { ListWrapper, Header, RowView } from './styled'
+import Journey from './Journey'
+import { journeyWidth } from 'src/lib/constants'
+import RoundedButton from './RoundedButton'
+import SwatchIcon from 'src/icons/SwitchIcon'
 
 type Props = {
   journeys: UserJourney[]
 }
 
 function Journeys({ journeys }: Props) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [flipped, setFlipped] = useState(false)
+
+  function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
+    const contentOffset = event.nativeEvent.contentOffset
+    const index = Math.floor(contentOffset.x / (journeyWidth + 20))
+
+    if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
+  }
+
   return (
     <ListWrapper>
-      <Header>Strekninger</Header>
+      <Header style={{ marginVertical: 16 }}>Strekninger</Header>
       <FlatList
         keyExtractor={(item: UserJourney) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
         }
         data={journeys}
         horizontal
+        pagingEnabled
+        onScroll={onScroll}
+        snapToInterval={journeyWidth + 20}
+        decelerationRate="fast"
+        ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
           return (
-            <View
-              from={{ translateX: -100 * (index + 1) }}
-              animate={{ translateX: 0 }}
-            >
-              <Text>
-                {item.fromStation.name} - {item.toStation.name}
-              </Text>
-            </View>
+            <Journey
+              journey={item}
+              index={index}
+              isFlipped={activeIndex === index && flipped}
+            />
           )
         }}
       />
+      <RowView
+        style={{
+          width: journeyWidth,
+          justifyContent: 'space-between',
+          paddingTop: 12,
+        }}
+      >
+        <RoundedButton
+          onPress={() => setFlipped(!flipped)}
+          icon={<SwatchIcon />}
+          color={journeys[activeIndex].color}
+        />
+        <RoundedButton title="Dra hit" color={journeys[activeIndex].color} />
+      </RowView>
     </ListWrapper>
   )
 }

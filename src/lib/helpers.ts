@@ -1,3 +1,8 @@
+import React from 'react'
+import GymIcon from 'src/icons/GymIcon'
+import HouseIcon from 'src/icons/HouseIcon'
+import WorkIcon from 'src/icons/WorkIcon'
+
 export function getDistanceFromLatLng(
   lat1: number,
   lng1: number,
@@ -23,4 +28,17 @@ function deg2rad(deg: number) {
 
 function square(x: number) {
   return Math.pow(x, 2)
+}
+
+export function iconMapper(name: string): React.VFC<{ color?: string }> {
+  switch (name) {
+    case 'home':
+      return HouseIcon
+    case 'gym':
+      return GymIcon
+    case 'work':
+      return WorkIcon
+    default:
+      return HouseIcon
+  }
 }
