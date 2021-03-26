@@ -55,3 +55,8 @@ export type User = {
   stations: SanityStation[]
   journeys: SanityJourney[]
 }
+
+export type LocationCoords = {
+  latitude: number
+  longitude: number
+}

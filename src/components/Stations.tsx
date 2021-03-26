@@ -50,7 +50,7 @@ function Stations({ stations }: Props) {
         title="Gå hit"
         color={stations[activeIndex].color}
         width={stationSize}
-        onPress={() =>
+        onPress={async () =>
           Linking.openURL(
             `oslobysykkel:stations/${stations[activeIndex].station_id}`
           )

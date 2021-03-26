@@ -1,12 +1,12 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text } from 'react-native'
+import { RefreshControl, SafeAreaView, StyleSheet, Text } from 'react-native'
 import * as Location from 'expo-location'
 import { useFonts } from 'expo-font'
 import { ScrollView, View } from 'moti'
 import { getStations, getUser } from './src/lib/api'
 import NearbyStations from './src/components/NearbyStations'
-import { Station, UserData } from './src/lib/types'
+import { LocationCoords, Station, UserData } from './src/lib/types'
 import Stations from './src/components/Stations'
 import Journeys from './src/components/Journeys'
 import { AppHeader } from './src/components/styled'
@@ -16,6 +16,8 @@ import { colors } from 'src/lib/constants'
 export default function App() {
   const [stations, setStations] = useState<Station[]>([])
   const [userData, setUserData] = useState<UserData>()
+  const [refreshing, setRefreshing] = useState(false)
+  const [location, setLocation] = useState<LocationCoords | undefined>()
 
   const [loaded] = useFonts({
     Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
@@ -32,6 +34,10 @@ export default function App() {
       }
 
       const location = await Location.getCurrentPositionAsync({})
+      setLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      })
       const stations = await getStations(location)
       const userData = await getUser(stations)
       setStations(stations)
@@ -58,10 +64,21 @@ export default function App() {
           <AppHeader>Sylkle</AppHeader>
         </View>
         <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={async () => {
+                setRefreshing(true)
+                const newStations = await getStations(location)
+                setStations(newStations)
+                setRefreshing(false)
+              }}
+            />
+          }
           contentContainerStyle={{
             paddingLeft: 20,
             paddingBottom: 200,
-            marginTop: 20,
+            marginTop: 10,
           }}
         >
           <Spacer spacing={20} />
@@ -69,7 +86,10 @@ export default function App() {
           <Spacer spacing={40} />
           <Stations stations={userData!.stations} />
           <Spacer spacing={40} />
-          <NearbyStations stations={stations} />
+          <NearbyStations
+            stations={stations}
+            userStations={userData.stations}
+          />
         </ScrollView>
       </SafeAreaView>
     </>

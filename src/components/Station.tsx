@@ -46,13 +46,13 @@ function Station({ station, index, black }: Props) {
       <RowView style={{ paddingTop: 20 }}>
         <RowView>
           <BicycleIcon color={!black ? 'white' : undefined} />
-          <Text white={!black} size={30} style={{ marginLeft: 4 }}>
+          <Text white={!black} size={30} style={{ marginLeft: 8 }}>
             {station.num_bikes_available}
           </Text>
         </RowView>
         <View style={{ flex: 1 }} />
         <RowView>
-          <Text white={!black} size={30} medium style={{ marginRight: 4 }}>
+          <Text white={!black} size={30} medium style={{ marginRight: 8 }}>
             {station.num_docks_available}
           </Text>
           <LockIcon color={!black ? 'white' : undefined} />

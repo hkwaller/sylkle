@@ -19,9 +19,9 @@ export const fancyColors = {
   darkRed: '##B92947',
   lightBlue: '##559CFF',
   blue: '#265EC2',
+  purple: '#8277F6',
   brown: '#C1A875',
   orange: '#EE7C50',
-  purple: '#8277F6',
   pink: '#ED6BD7',
 }
 

@@ -7,6 +7,7 @@ export const AppHeader = styled.Text`
   font-family: 'SansationBold';
   font-size: 40px;
   font-weight: 800;
+  margin-top: 20px;
 `
 export const Header = styled.Text`
   font-family: 'Sansation';
@@ -14,11 +15,10 @@ export const Header = styled.Text`
 `
 
 export const ListWrapper = styled(View)`
-  padding-top: 30px;
+  padding-top: 50px;
   align-items: flex-start;
   background-color: ${colors.gray};
   padding: 20px;
-  padding-top: 10px;
   margin: -20px;
 `
 
@@ -37,7 +37,7 @@ type TextProps = {
 
 export const Text = styled(RNText)<TextProps>`
   font-family: ${({ medium }) => (medium ? 'SansationBold' : 'Sansation')};
-  font-size: ${({ big, size }) => (size ? `${size}px` : big ? '18px' : '14px')};
+  font-size: ${({ big, size }) => (size ? `${size}px` : big ? '18px' : '16px')};
   color: ${({ white }) => (white ? colors.white : colors.black)};
   text-align: ${({ center }) => (center ? 'center' : 'left')};
 `
