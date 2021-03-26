@@ -5,19 +5,18 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
 } from 'react-native'
+import { view } from '@risingstack/react-easy-state'
 import { View } from '@motify/components'
 import { Station as StationType } from 'src/lib/types'
-import { Header, ListWrapper } from './styled'
+import { Header, ListWrapper, RowView, Text } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
 import { stationSize } from 'src/lib/constants'
 import Spacer from './Spacer'
+import { state } from 'src/lib/state'
+import { deleteStation } from 'src/lib/api'
 
-type Props = {
-  stations: StationType[]
-}
-
-function Stations({ stations }: Props) {
+function Stations() {
   const [activeIndex, setActiveIndex] = useState(0)
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -32,7 +31,7 @@ function Stations({ stations }: Props) {
       <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
-        data={stations}
+        data={state.userStations}
         horizontal
         pagingEnabled
         onScroll={onScroll}
@@ -46,17 +45,23 @@ function Stations({ stations }: Props) {
         }}
       />
       <Spacer spacing={6} />
-      <RoundedButton
-        title="Gå hit"
-        color={stations[activeIndex].color}
-        width={stationSize}
-        onPress={async () =>
-          Linking.openURL(
-            `oslobysykkel:stations/${stations[activeIndex].station_id}`
-          )
-        }
-      />
+      <RowView style={{ width: stationSize, justifyContent: 'space-between' }}>
+        <RoundedButton
+          title="Gå hit"
+          color={state.userStations[activeIndex].color}
+          onPress={async () =>
+            Linking.openURL(
+              `oslobysykkel:stations/${state.userStations[activeIndex].station_id}`
+            )
+          }
+        />
+        <RoundedButton
+          onPress={async () => await deleteStation(activeIndex)}
+          icon={<Text>X</Text>}
+          color={state.userStations[activeIndex].color}
+        />
+      </RowView>
     </ListWrapper>
   )
 }
-export default Stations
+export default view(Stations)

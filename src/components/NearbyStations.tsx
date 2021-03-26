@@ -7,19 +7,16 @@ import {
 } from 'react-native'
 import { View } from '@motify/components'
 import { Station as StationType } from 'src/lib/types'
-import { Header, ListWrapper } from './styled'
+import { Header, ListWrapper, RowView } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
 import { stationSize } from 'src/lib/constants'
 import Spacer from './Spacer'
-import { addStation } from 'src/lib/api'
+import { addStation, deleteStation } from 'src/lib/api'
+import { state } from 'src/lib/state'
+import { view } from '@risingstack/react-easy-state'
 
-type Props = {
-  stations: StationType[]
-  userStations: StationType[]
-}
-
-function NearbyStations({ stations, userStations }: Props) {
+function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
@@ -34,7 +31,7 @@ function NearbyStations({ stations, userStations }: Props) {
       <Header style={{ marginBottom: 12 }}>Nærmeste stasjoner</Header>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
-        data={stations}
+        data={state.stations}
         horizontal
         pagingEnabled
         onScroll={onScroll}
@@ -45,13 +42,14 @@ function NearbyStations({ stations, userStations }: Props) {
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
           const stationObject =
-            userStations.find((s) => s.station_id === item.station_id) || item
+            state.userStations.find((s) => s.station_id === item.station_id) ||
+            item
           return (
             <Station
               station={stationObject}
               index={index}
               black={
-                userStations
+                state.userStations
                   .map((us) => us.station_id)
                   .indexOf(item.station_id) === -1
               }
@@ -62,11 +60,11 @@ function NearbyStations({ stations, userStations }: Props) {
       <Spacer spacing={6} />
       <RoundedButton
         title="Legg til"
-        color={stations[activeIndex].color}
         width={stationSize}
-        onPress={async () => await addStation(stations[activeIndex])}
+        color={state.stations[activeIndex].color}
+        onPress={async () => await addStation(state.stations[activeIndex])}
       />
     </ListWrapper>
   )
 }
-export default NearbyStations
+export default view(NearbyStations)

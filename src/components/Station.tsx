@@ -1,15 +1,15 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { View } from '@motify/components'
-import { fancyColors, fancyColorsArray, stationSize } from 'src/lib/constants'
-import { Station as StationType } from 'src/lib/types'
+import { fancyColors, stationSize } from 'src/lib/constants'
+import { UserStation } from 'src/lib/types'
 import { RowView, Text } from './styled'
 import { iconMapper } from 'src/lib/helpers'
 import BicycleIcon from 'src/icons/BicycleIcon'
 import LockIcon from 'src/icons/LockIcon'
 
 type Props = {
-  station: StationType
+  station: UserStation
   index: number
   black?: boolean
 }

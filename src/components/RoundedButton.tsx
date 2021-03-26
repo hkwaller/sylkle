@@ -25,7 +25,13 @@ type Props = {
   onPress?: () => void
 }
 
-function RoundedButton({ title, color, icon, width, onPress }: Props) {
+function RoundedButton({
+  title,
+  color = fancyColors.mint,
+  icon,
+  width,
+  onPress,
+}: Props) {
   const buttonScale = useSharedValue(1)
 
   const gestureHandler = useAnimatedGestureHandler<

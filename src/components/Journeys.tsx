@@ -12,12 +12,10 @@ import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
 import RoundedButton from './RoundedButton'
 import SwatchIcon from 'src/icons/SwitchIcon'
+import { view } from '@risingstack/react-easy-state'
+import { state } from 'src/lib/state'
 
-type Props = {
-  journeys: UserJourney[]
-}
-
-function Journeys({ journeys }: Props) {
+function Journeys() {
   const [activeIndex, setActiveIndex] = useState(0)
   const [flipped, setFlipped] = useState(-1)
 
@@ -35,7 +33,7 @@ function Journeys({ journeys }: Props) {
         keyExtractor={(item: UserJourney) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
         }
-        data={journeys}
+        data={state.userJourneys}
         horizontal
         pagingEnabled
         onScroll={onScroll}
@@ -64,15 +62,15 @@ function Journeys({ journeys }: Props) {
         <RoundedButton
           onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
           icon={<SwatchIcon />}
-          color={journeys[activeIndex].color}
+          color={state.userJourneys[activeIndex].color}
         />
         <RoundedButton
           title="Dra hit"
-          color={journeys[activeIndex].color}
+          color={state.userJourneys[activeIndex].color}
           onPress={() =>
             Linking.openURL(
               `oslobysykkel:stations/${
-                journeys[activeIndex][
+                state.userJourneys[activeIndex][
                   flipped === activeIndex ? 'toStation' : 'fromStation'
                 ].station_id
               }`
@@ -83,4 +81,4 @@ function Journeys({ journeys }: Props) {
     </ListWrapper>
   )
 }
-export default Journeys
+export default view(Journeys)

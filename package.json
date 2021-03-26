@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@risingstack/react-easy-state": "^6.3.0",
     "@sanity/client": "^2.2.6",
     "expo": "~40.0.0",
     "expo-font": "~8.4.0",

@@ -1,23 +1,22 @@
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect, useState } from 'react'
-import { RefreshControl, SafeAreaView, StyleSheet, Text } from 'react-native'
+import { RefreshControl, SafeAreaView, StyleSheet } from 'react-native'
 import * as Location from 'expo-location'
 import { useFonts } from 'expo-font'
 import { ScrollView, View } from 'moti'
-import { getStations, getUser } from './src/lib/api'
+import { getStations } from './src/lib/api'
 import NearbyStations from './src/components/NearbyStations'
-import { LocationCoords, Station, UserData } from './src/lib/types'
+import { LocationCoords } from './src/lib/types'
 import Stations from './src/components/Stations'
 import Journeys from './src/components/Journeys'
 import { AppHeader } from './src/components/styled'
 import Spacer from 'src/components/Spacer'
 import { colors } from 'src/lib/constants'
+import { state } from 'src/lib/state'
+import { view } from '@risingstack/react-easy-state'
 
-export default function App() {
-  const [stations, setStations] = useState<Station[]>([])
-  const [userData, setUserData] = useState<UserData>()
+function App() {
   const [refreshing, setRefreshing] = useState(false)
-  const [location, setLocation] = useState<LocationCoords | undefined>()
 
   const [loaded] = useFonts({
     Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
@@ -34,20 +33,18 @@ export default function App() {
       }
 
       const location = await Location.getCurrentPositionAsync({})
-      setLocation({
+      state.location = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
-      })
-      const stations = await getStations(location)
-      const userData = await getUser(stations)
-      setStations(stations)
-      setUserData(userData)
+      }
+
+      await getStations(state.location)
     }
 
     get()
   }, [])
 
-  if (!loaded || !userData) {
+  if (!loaded || state.stations.length === 0) {
     return null
   }
 
@@ -69,8 +66,7 @@ export default function App() {
               refreshing={refreshing}
               onRefresh={async () => {
                 setRefreshing(true)
-                const newStations = await getStations(location)
-                setStations(newStations)
+                await getStations(state.location)
                 setRefreshing(false)
               }}
             />
@@ -82,14 +78,11 @@ export default function App() {
           }}
         >
           <Spacer spacing={20} />
-          <Journeys journeys={userData!.journeys} />
+          {state.userJourneys.length > 0 && <Journeys />}
           <Spacer spacing={40} />
-          <Stations stations={userData!.stations} />
+          {state.userStations.length > 0 && <Stations />}
           <Spacer spacing={40} />
-          <NearbyStations
-            stations={stations}
-            userStations={userData.stations}
-          />
+          <NearbyStations />
         </ScrollView>
       </SafeAreaView>
     </>
@@ -103,3 +96,5 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 })
+
+export default view(App)

@@ -4,7 +4,7 @@
     "name": "sylkle-backend"
   },
   "api": {
-    "projectId": "am0de4ur",
+    "projectId": "c339q3f3",
     "dataset": "production"
   },
   "plugins": [
@@ -16,9 +16,7 @@
   ],
   "env": {
     "development": {
-      "plugins": [
-        "@sanity/vision"
-      ]
+      "plugins": ["@sanity/vision"]
     }
   },
   "parts": [
