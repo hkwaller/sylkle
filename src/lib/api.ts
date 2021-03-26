@@ -7,7 +7,8 @@ const client = sanityClient({
   projectId: 'am0de4ur',
   dataset: 'production',
   token: token,
-  useCdn: true,
+  useCdn: false,
+  apiVersion: '1',
 })
 
 const headers = {

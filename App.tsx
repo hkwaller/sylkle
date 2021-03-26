@@ -57,7 +57,13 @@ export default function App() {
         >
           <AppHeader>Sylkle</AppHeader>
         </View>
-        <ScrollView contentContainerStyle={{ paddingLeft: 20 }}>
+        <ScrollView
+          contentContainerStyle={{
+            paddingLeft: 20,
+            paddingBottom: 200,
+            marginTop: 20,
+          }}
+        >
           <Spacer spacing={20} />
           <Journeys journeys={userData!.journeys} />
           <Spacer spacing={40} />

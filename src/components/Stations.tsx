@@ -10,7 +10,7 @@ import { Station as StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { stationWidth } from 'src/lib/constants'
+import { stationSize } from 'src/lib/constants'
 import Spacer from './Spacer'
 
 type Props = {
@@ -22,7 +22,7 @@ function Stations({ stations }: Props) {
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
-    const index = Math.floor(contentOffset.x / (stationWidth + 20))
+    const index = Math.floor(contentOffset.x / (stationSize + 19))
 
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
@@ -35,9 +35,9 @@ function Stations({ stations }: Props) {
         data={stations}
         horizontal
         pagingEnabled
-        snapToInterval={stationWidth + 20}
-        decelerationRate="fast"
         onScroll={onScroll}
+        snapToInterval={stationSize + 20}
+        decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
@@ -49,7 +49,7 @@ function Stations({ stations }: Props) {
       <RoundedButton
         title="Gå hit"
         color={stations[activeIndex].color}
-        width={stationWidth}
+        width={stationSize}
         onPress={() =>
           Linking.openURL(
             `oslobysykkel:stations/${stations[activeIndex].station_id}`

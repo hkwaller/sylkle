@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { View } from '@motify/components'
-import { fancyColors, fancyColorsArray, stationWidth } from 'src/lib/constants'
+import { fancyColors, fancyColorsArray, stationSize } from 'src/lib/constants'
 import { Station as StationType } from 'src/lib/types'
 import { RowView, Text } from './styled'
 import { iconMapper } from 'src/lib/helpers'
@@ -11,45 +11,51 @@ import LockIcon from 'src/icons/LockIcon'
 type Props = {
   station: StationType
   index: number
+  black?: boolean
 }
 
-function Station({ station, index }: Props) {
+function Station({ station, index, black }: Props) {
   const Icon = iconMapper(station.icon)
 
   return (
     <View
       style={[
         styles.container,
-        { backgroundColor: fancyColors[station.color] },
+        {
+          backgroundColor: fancyColors[station.color],
+          borderColor: fancyColors[station.color],
+        },
       ]}
       from={{ translateX: -100 * (index + 1) }}
       animate={{ translateX: 0 }}
     >
-      <Text white big medium center>
-        {station.name}
-      </Text>
-      <RowView style={{ paddingTop: 6 }}>
-        <Icon color="white" />
-        <Text white style={{ paddingHorizontal: 5 }}>
-          |
+      <View style={{ alignItems: 'center' }}>
+        <Text white={!black} big medium center>
+          {station.name}
         </Text>
-        <Text white big>
-          {station.distance}m
-        </Text>
-      </RowView>
+        <RowView style={{ paddingTop: 6 }}>
+          <Icon color="white" />
+          <Text white style={{ paddingHorizontal: 5 }}>
+            |
+          </Text>
+          <Text white={!black} big>
+            {station.distance}m
+          </Text>
+        </RowView>
+      </View>
       <RowView style={{ paddingTop: 20 }}>
         <RowView>
-          <BicycleIcon color="white" />
-          <Text white size={30} style={{ marginLeft: 4 }}>
+          <BicycleIcon color={!black ? 'white' : undefined} />
+          <Text white={!black} size={30} style={{ marginLeft: 4 }}>
             {station.num_bikes_available}
           </Text>
         </RowView>
         <View style={{ flex: 1 }} />
         <RowView>
-          <Text white size={30} medium style={{ marginRight: 4 }}>
+          <Text white={!black} size={30} medium style={{ marginRight: 4 }}>
             {station.num_docks_available}
           </Text>
-          <LockIcon color="white" />
+          <LockIcon color={!black ? 'white' : undefined} />
         </RowView>
       </RowView>
     </View>
@@ -60,7 +66,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     alignItems: 'center',
-    width: stationWidth,
+    width: stationSize,
+    height: stationSize,
+    borderWidth: 2,
+    justifyContent: 'space-between',
   },
 })
 

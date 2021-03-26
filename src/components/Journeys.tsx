@@ -4,7 +4,6 @@ import {
   Linking,
   NativeScrollEvent,
   NativeSyntheticEvent,
-  Text,
 } from 'react-native'
 import { View } from '@motify/components'
 import { UserJourney } from 'src/lib/types'
