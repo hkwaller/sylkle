@@ -10,14 +10,16 @@ export const colors = {
 export const stationSize = width / 2 - 10
 export const journeyWidth = width - 100
 
+export type FancyColorsType = keyof typeof fancyColors
+
 export const fancyColors = {
   green: '#52AEAF',
-  mint: '##00BAA5',
-  darkGreen: '##009D74',
+  mint: '#00BAA5',
+  darkGreen: '#009D74',
   salmon: '#FF8694',
   red: '#E8657F',
-  darkRed: '##B92947',
-  lightBlue: '##559CFF',
+  darkRed: '#B92947',
+  lightBlue: '#559CFF',
   blue: '#265EC2',
   purple: '#8277F6',
   brown: '#C1A875',
@@ -25,6 +27,6 @@ export const fancyColors = {
   pink: '#ED6BD7',
 }
 
-export const fancyColorsArray = [
-  ...Object.keys(fancyColors).map((key) => fancyColors[key]),
-]
+export const fancyColorsArray = Object.keys(fancyColors).map(
+  (key: FancyColorsType) => fancyColors[key]
+)

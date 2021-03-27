@@ -64,7 +64,9 @@ export async function getStations(location: LocationCoords) {
           ...matchedStation,
         } as UserStation
       })
-      .sort((a: UserStation, b: UserStation) => a.distance > b.distance)
+      .sort((a: UserStation, b: UserStation) =>
+        a.distance > b.distance ? 1 : -1
+      )
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
       const fromStation = parsedStations.find(

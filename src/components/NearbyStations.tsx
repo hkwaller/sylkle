@@ -31,7 +31,7 @@ function NearbyStations() {
       <Header style={{ marginBottom: 12 }}>Nærmeste stasjoner</Header>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
-        data={state.stations}
+        data={state.stations.slice(0, 10)}
         horizontal
         pagingEnabled
         onScroll={onScroll}

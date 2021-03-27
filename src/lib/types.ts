@@ -5,10 +5,10 @@ export type Station = {
   lat: number
   lon: number
   capacity: number
+  distance: number
 } & Status
 
 export type UserStation = {
-  distance: number
   color: string
   icon: string
 } & Station

@@ -1,23 +1,22 @@
-import { StatusBar } from 'expo-status-bar'
-import React, { useEffect, useState } from 'react'
-import { RefreshControl, SafeAreaView, StyleSheet } from 'react-native'
-import * as Location from 'expo-location'
+import React, { useEffect } from 'react'
+import { View } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useFonts } from 'expo-font'
-import { ScrollView, View } from 'moti'
-import { getStations } from './src/lib/api'
-import NearbyStations from './src/components/NearbyStations'
-import { LocationCoords } from './src/lib/types'
-import Stations from './src/components/Stations'
-import Journeys from './src/components/Journeys'
-import { AppHeader } from './src/components/styled'
-import Spacer from 'src/components/Spacer'
-import { colors } from 'src/lib/constants'
+import * as Location from 'expo-location'
+import { SafeAreaView } from '@motify/components'
+import { getStations } from 'src/lib/api'
 import { state } from 'src/lib/state'
-import { view } from '@risingstack/react-easy-state'
+import { Text } from 'src/components/styled'
+import HouseIcon from 'src/icons/HouseIcon'
+import GymIcon from 'src/icons/GymIcon'
 
-function App() {
-  const [refreshing, setRefreshing] = useState(false)
+import HomeScreen from 'src/screens/Home'
+import SetupScreen from 'src/screens/Setup'
 
+const Tab = createBottomTabNavigator()
+
+export default function App() {
   const [loaded] = useFonts({
     Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
     SansationBold: require('./assets/fonts/Sansation_Bold.ttf'),
@@ -45,56 +44,34 @@ function App() {
   }, [])
 
   if (!loaded || state.stations.length === 0) {
-    return null
+    return (
+      <SafeAreaView style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Loading...</Text>
+      </SafeAreaView>
+    )
   }
 
   return (
-    <>
-      <StatusBar style="auto" />
-      <SafeAreaView style={styles.container}>
-        <View
-          from={{ opacity: 0, translateY: -20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring' }}
-          style={{ paddingLeft: 20 }}
-        >
-          <AppHeader>Sylkle</AppHeader>
-        </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={async () => {
-                setRefreshing(true)
-                await getStations(state.location)
-                setRefreshing(false)
-              }}
-            />
-          }
-          contentContainerStyle={{
-            paddingLeft: 20,
-            paddingBottom: 200,
-            marginTop: 10,
-          }}
-        >
-          <Spacer spacing={20} />
-          {state.userJourneys.length > 0 && <Journeys />}
-          <Spacer spacing={40} />
-          {state.userStations.length > 0 && <Stations />}
-          <Spacer spacing={40} />
-          <NearbyStations />
-        </ScrollView>
-      </SafeAreaView>
-    </>
+    <NavigationContainer>
+      <Tab.Navigator
+        sceneContainerStyle={{ backgroundColor: 'white' }}
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color }) => {
+            if (route.name === 'Home') {
+              return <HouseIcon color={color} />
+            } else if (route.name === 'Setup') {
+              return <GymIcon color={color} />
+            }
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: 'tomato',
+          inactiveTintColor: 'gray',
+        }}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Setup" component={SetupScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colors.white,
-    marginTop: 60,
-    flex: 1,
-  },
-})
-
-export default view(App)

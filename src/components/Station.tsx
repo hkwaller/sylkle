@@ -2,14 +2,14 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { View } from '@motify/components'
 import { fancyColors, stationSize } from 'src/lib/constants'
-import { UserStation } from 'src/lib/types'
+import { UserStation, Station as StationType } from 'src/lib/types'
 import { RowView, Text } from './styled'
 import { iconMapper } from 'src/lib/helpers'
 import BicycleIcon from 'src/icons/BicycleIcon'
 import LockIcon from 'src/icons/LockIcon'
 
 type Props = {
-  station: UserStation
+  station: UserStation | StationType
   index: number
   black?: boolean
 }
@@ -34,10 +34,14 @@ function Station({ station, index, black }: Props) {
           {station.name}
         </Text>
         <RowView style={{ paddingTop: 6 }}>
-          <Icon color="white" />
-          <Text white style={{ paddingHorizontal: 5 }}>
-            |
-          </Text>
+          {!black && (
+            <>
+              <Icon color="white" />
+              <Text white style={{ paddingHorizontal: 5 }}>
+                |
+              </Text>
+            </>
+          )}
           <Text white={!black} big>
             {station.distance}m
           </Text>
