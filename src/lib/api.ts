@@ -1,11 +1,4 @@
-import {
-  LocationCoords,
-  SanityStation,
-  Station,
-  Status,
-  User,
-  UserStation,
-} from './types'
+import { LocationCoords, Station, Status, User, UserStation } from './types'
 import { token } from '../../token'
 import { getDistanceFromLatLng } from './helpers'
 import { fancyColors, fancyColorsArray } from './constants'
@@ -89,7 +82,7 @@ export async function getStations(location: LocationCoords) {
       userJourneys,
     }
   })
-
+  state.loaded = true
   state.stations = parsedStations
   state.userJourneys = sanityData.userJourneys || []
   state.userStations = sanityData.userStations || []
@@ -116,6 +109,27 @@ export async function addStation(station: Station) {
     .patch(state.userId)
     .setIfMissing({ stations: [] })
     .insert('before', 'stations[-1]', [{ _key: Math.random(), ...newStation }])
+    .commit()
+
+  await getStations(state.location)
+}
+
+export async function addJourney(fromStation: string, toStation: string) {
+  const sanityJourney = {
+    fromStation: fromStation,
+    toStation: toStation,
+    color: Object.keys(fancyColors).map((k) => k)[
+      Math.floor(Math.random(fancyColorsArray.length) * 10)
+    ],
+    name: 'Hej',
+  }
+
+  await client
+    .patch(state.userId)
+    .setIfMissing({ journeys: [] })
+    .insert('before', 'journeys[-1]', [
+      { _key: Math.random(), ...sanityJourney },
+    ])
     .commit()
 
   await getStations(state.location)

@@ -12,14 +12,14 @@ export const AppHeader = styled.Text`
 export const Header = styled.Text`
   font-family: 'Sansation';
   font-size: 18px;
+  margin-left: 20px;
 `
 
 export const ListWrapper = styled(View)`
-  padding-top: 50px;
   align-items: flex-start;
   background-color: ${colors.gray};
-  padding: 20px;
-  margin: -20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 `
 
 export const RowView = styled(View)`

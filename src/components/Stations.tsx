@@ -7,14 +7,16 @@ import {
 } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { View } from '@motify/components'
-import { Station as StationType } from 'src/lib/types'
+import Toast from 'react-native-toast-message'
+import { Station as StationType, UserStation } from 'src/lib/types'
 import { Header, ListWrapper, RowView, Text } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { stationSize } from 'src/lib/constants'
+import { stationSize, toastConfig } from 'src/lib/constants'
 import Spacer from './Spacer'
 import { state } from 'src/lib/state'
 import { deleteStation } from 'src/lib/api'
+import { iconMapper } from 'src/lib/helpers'
 
 function Stations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -30,7 +32,7 @@ function Stations() {
     <ListWrapper>
       <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
       <FlatList
-        keyExtractor={(item: StationType) => item.station_id}
+        keyExtractor={(item: UserStation) => item.station_id}
         data={state.userStations}
         horizontal
         pagingEnabled
@@ -41,11 +43,28 @@ function Stations() {
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
-          return <Station station={item} index={index} />
+          const Icon = iconMapper(item.icon)
+
+          return (
+            <>
+              {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+              <Station
+                station={item}
+                index={index}
+                Icon={<Icon color="white" />}
+              />
+            </>
+          )
         }}
       />
       <Spacer spacing={6} />
-      <RowView style={{ width: stationSize, justifyContent: 'space-between' }}>
+      <RowView
+        style={{
+          width: stationSize,
+          justifyContent: 'space-between',
+          marginLeft: 20,
+        }}
+      >
         <RoundedButton
           title="Gå hit"
           color={state.userStations[activeIndex].color}
@@ -56,7 +75,14 @@ function Stations() {
           }
         />
         <RoundedButton
-          onPress={async () => await deleteStation(activeIndex)}
+          onPress={async () => {
+            await deleteStation(activeIndex)
+            Toast.show({
+              text1: `${state.stations[activeIndex].name} er tatt bort`,
+              ...toastConfig,
+            })
+            setActiveIndex(activeIndex)
+          }}
           icon={<Text>X</Text>}
           color={state.userStations[activeIndex].color}
         />

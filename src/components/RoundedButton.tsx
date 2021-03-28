@@ -19,15 +19,17 @@ import { fancyColors } from 'src/lib/constants'
 
 type Props = {
   title?: string
-  color: string
+  color?: string
   icon?: React.ReactNode
   width?: number
   onPress?: () => void
+  backgroundColor?: string
 }
 
 function RoundedButton({
   title,
   color = fancyColors.mint,
+  backgroundColor,
   icon,
   width,
   onPress,
@@ -67,14 +69,14 @@ function RoundedButton({
       <Animated.View style={style}>
         <View
           animate={{
-            borderColor: fancyColors[color],
+            borderColor: backgroundColor || fancyColors[color],
             width: width || undefined,
           }}
           transition={{ type: 'timing', duration: 400 }}
-          style={[styles.container]}
+          style={[styles.container, { backgroundColor: backgroundColor }]}
         >
-          <Text>{title}</Text>
-          {icon || <ArrowIcon />}
+          <Text white={!!backgroundColor}>{title}</Text>
+          {icon || <ArrowIcon color={backgroundColor ? '#fff' : undefined} />}
         </View>
       </Animated.View>
     </TapGestureHandler>

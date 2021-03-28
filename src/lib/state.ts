@@ -7,6 +7,7 @@ export type State = {
   userStations: UserStation[]
   userJourneys: UserJourney[]
   location: LocationCoords
+  loaded: boolean
 }
 
 export const state = store<State>({
@@ -18,4 +19,5 @@ export const state = store<State>({
     latitude: 60.0,
     longitude: 10.0,
   },
+  loaded: false,
 })

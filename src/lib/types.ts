@@ -6,10 +6,10 @@ export type Station = {
   lon: number
   capacity: number
   distance: number
+  color: string
 } & Status
 
 export type UserStation = {
-  color: string
   icon: string
 } & Station
 
