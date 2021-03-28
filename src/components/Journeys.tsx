@@ -44,11 +44,14 @@ function Journeys() {
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
           return (
-            <Journey
-              journey={item}
-              index={index}
-              isFlipped={index === flipped}
-            />
+            <>
+              {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+              <Journey
+                journey={item}
+                index={index}
+                isFlipped={index === flipped}
+              />
+            </>
           )
         }}
       />
@@ -57,6 +60,7 @@ function Journeys() {
           width: journeyWidth,
           justifyContent: 'space-between',
           paddingTop: 12,
+          paddingLeft: 20,
         }}
       >
         <RoundedButton

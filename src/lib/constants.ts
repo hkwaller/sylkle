@@ -1,4 +1,6 @@
 import { Dimensions } from 'react-native'
+import { ToastProps } from 'react-native-toast-message'
+
 const { width } = Dimensions.get('screen')
 
 export const colors = {
@@ -25,8 +27,15 @@ export const fancyColors = {
   brown: '#C1A875',
   orange: '#EE7C50',
   pink: '#ED6BD7',
-}
+} as any
 
 export const fancyColorsArray = Object.keys(fancyColors).map(
   (key: FancyColorsType) => fancyColors[key]
 )
+
+export const toastConfig = {
+  type: 'success',
+  position: 'bottom',
+  visibilityTime: 2000,
+  bottomOffset: 80,
+} as any

@@ -12,11 +12,10 @@ type Props = {
   station: UserStation | StationType
   index: number
   black?: boolean
+  Icon?: React.ReactNode
 }
 
-function Station({ station, index, black }: Props) {
-  const Icon = iconMapper(station.icon)
-
+function Station({ station, index, black, Icon }: Props) {
   return (
     <View
       style={[
@@ -36,7 +35,7 @@ function Station({ station, index, black }: Props) {
         <RowView style={{ paddingTop: 6 }}>
           {!black && (
             <>
-              <Icon color="white" />
+              {Icon}
               <Text white style={{ paddingHorizontal: 5 }}>
                 |
               </Text>

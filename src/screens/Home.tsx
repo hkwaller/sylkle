@@ -1,34 +1,27 @@
-import { StatusBar } from 'expo-status-bar'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { RefreshControl, SafeAreaView, StyleSheet } from 'react-native'
-import * as Location from 'expo-location'
-import { useFonts } from 'expo-font'
 import { view } from '@risingstack/react-easy-state'
-import { ScrollView, View } from 'moti'
+import { ScrollView } from 'moti'
 import Spacer from 'src/components/Spacer'
 import { colors } from 'src/lib/constants'
 import { state } from 'src/lib/state'
 import Journeys from 'src/components/Journeys'
 import NearbyStations from 'src/components/NearbyStations'
 import Stations from 'src/components/Stations'
-import { AppHeader } from 'src/components/styled'
 import { getStations } from 'src/lib/api'
+import BackgroundLeft from 'src/icons/BackgroundLeft'
+import BackgroundRight from 'src/icons/BackgroundRight'
+import PageHeader from 'src/components/PageHeader'
 
 function App() {
   const [refreshing, setRefreshing] = useState(false)
 
   return (
     <>
-      <StatusBar style="auto" />
       <SafeAreaView style={styles.container}>
-        <View
-          from={{ opacity: 0, translateY: -20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring' }}
-          style={{ paddingLeft: 20 }}
-        >
-          <AppHeader>Sylkle</AppHeader>
-        </View>
+        <BackgroundLeft />
+        <BackgroundRight />
+        <PageHeader title="Sylkle" />
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -41,7 +34,6 @@ function App() {
             />
           }
           contentContainerStyle={{
-            paddingLeft: 20,
             paddingBottom: 200,
             marginTop: 10,
           }}
@@ -51,7 +43,7 @@ function App() {
           <Spacer spacing={40} />
           {state.userStations.length > 0 && <Stations />}
           <Spacer spacing={40} />
-          <NearbyStations />
+          {state.stations.length > 0 && <NearbyStations />}
         </ScrollView>
       </SafeAreaView>
     </>

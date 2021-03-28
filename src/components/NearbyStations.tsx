@@ -1,20 +1,16 @@
 import React, { useState } from 'react'
-import {
-  FlatList,
-  Linking,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-} from 'react-native'
+import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { View } from '@motify/components'
+import { view } from '@risingstack/react-easy-state'
+import Toast from 'react-native-toast-message'
 import { Station as StationType } from 'src/lib/types'
-import { Header, ListWrapper, RowView } from './styled'
+import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { stationSize } from 'src/lib/constants'
+import { stationSize, toastConfig } from 'src/lib/constants'
 import Spacer from './Spacer'
-import { addStation, deleteStation } from 'src/lib/api'
+import { addStation } from 'src/lib/api'
 import { state } from 'src/lib/state'
-import { view } from '@risingstack/react-easy-state'
 
 function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -45,26 +41,39 @@ function NearbyStations() {
             state.userStations.find((s) => s.station_id === item.station_id) ||
             item
           return (
-            <Station
-              station={stationObject}
-              index={index}
-              black={
-                state.userStations
-                  .map((us) => us.station_id)
-                  .indexOf(item.station_id) === -1
-              }
-            />
+            <>
+              {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+              <Station
+                station={stationObject}
+                index={index}
+                black={
+                  state.userStations
+                    .map((us) => us.station_id)
+                    .indexOf(item.station_id) === -1
+                }
+              />
+            </>
           )
         }}
       />
       <Spacer spacing={6} />
-      <RoundedButton
-        title="Legg til"
-        width={stationSize}
-        color={state.stations[activeIndex].color}
-        onPress={async () => await addStation(state.stations[activeIndex])}
-      />
+      <View style={{ marginLeft: 20 }}>
+        <RoundedButton
+          title="Legg til"
+          width={stationSize}
+          color={state.stations[activeIndex].color}
+          onPress={async () => {
+            await addStation(state.stations[activeIndex])
+
+            Toast.show({
+              text1: `${state.stations[activeIndex].name} er lagt til`,
+              ...toastConfig,
+            })
+          }}
+        />
+      </View>
     </ListWrapper>
   )
 }
+
 export default view(NearbyStations)
