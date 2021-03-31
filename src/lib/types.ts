@@ -31,6 +31,7 @@ export type Location = {
 }
 
 export type UserJourney = {
+  _key: string
   fromStation: Station
   toStation: Station
   color: string

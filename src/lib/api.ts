@@ -82,6 +82,7 @@ export async function getStations(location: LocationCoords) {
       userJourneys,
     }
   })
+
   state.loaded = true
   state.stations = parsedStations
   state.userJourneys = sanityData.userJourneys || []
@@ -114,30 +115,41 @@ export async function addStation(station: Station) {
   await getStations(state.location)
 }
 
-export async function addJourney(fromStation: string, toStation: string) {
+export async function addJourney(
+  fromStation: string,
+  toStation: string,
+  name: string
+) {
   const sanityJourney = {
     fromStation: fromStation,
     toStation: toStation,
+    name: name,
     color: Object.keys(fancyColors).map((k) => k)[
       Math.floor(Math.random(fancyColorsArray.length) * 10)
     ],
-    name: 'Hej',
   }
 
   await client
     .patch(state.userId)
     .setIfMissing({ journeys: [] })
     .insert('before', 'journeys[-1]', [
-      { _key: Math.random(), ...sanityJourney },
+      { _key: `${Math.random()}`, ...sanityJourney },
     ])
     .commit()
 
   await getStations(state.location)
 }
 
-export async function deleteStation(index: number) {
-  const stationsToRemove = [`stations[${index}]`]
+export async function deleteStation(stationId: string) {
+  const stationsToRemove = [`stations[id=="${stationId}"]`]
 
   await client.patch(state.userId).unset(stationsToRemove).commit()
+  await getStations(state.location)
+}
+
+export async function deleteJourney(key: string) {
+  const journeyToRemove = [`journeys[_key=="${key}"]`]
+
+  await client.patch(state.userId).unset(journeyToRemove).commit()
   await getStations(state.location)
 }

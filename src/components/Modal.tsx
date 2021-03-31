@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import { FlatList } from 'react-native'
 import { View } from '@motify/components'
 import { Dimensions, Pressable } from 'react-native'
 import ModalView from 'react-native-modal'
 import { Header, ListWrapper, Text } from './styled'
 import { fancyColors } from 'src/lib/constants'
-import {
-  FlatList,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native-gesture-handler'
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
 import { state } from 'src/lib/state'
 import Spacer from './Spacer'
 import { Station, Station as StationType } from 'src/lib/types'
@@ -97,13 +94,21 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
             }}
           />
         </ListWrapper>
-        <TextInput
-          style={{ height: 80 }}
-          placeholder="Filtrer på stasjoner"
-          onChangeText={(text) => setText(text)}
-          defaultValue={text}
-        />
         <ListWrapper>
+          <TextInput
+            style={{
+              height: 60,
+              marginBottom: 20,
+              paddingLeft: 20,
+              fontSize: 18,
+              marginLeft: 20,
+              backgroundColor: 'white',
+              width: width - 40,
+            }}
+            placeholder="Filtrer på stasjoner"
+            onChangeText={(text) => setText(text)}
+            defaultValue={text}
+          />
           <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
           <FlatList
             keyExtractor={(item: StationType) => item.station_id}
@@ -129,4 +134,5 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
     </ModalView>
   )
 }
+
 export default Modal

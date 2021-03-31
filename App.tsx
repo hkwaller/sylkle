@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { Dimensions, ImageBackground, View, StyleSheet } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'
@@ -11,14 +12,16 @@ import 'react-native-gesture-handler'
 import { getStations } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import { Text } from 'src/components/styled'
-import HouseIcon from 'src/icons/HouseIcon'
-import GymIcon from 'src/icons/GymIcon'
 
 import HomeScreen from 'src/screens/Home'
 import SetupScreen from 'src/screens/Setup'
-import { Dimensions } from 'react-native'
-import { View } from 'react-native'
-import { fancyColors } from 'src/lib/constants'
+import AllScreen from 'src/screens/All'
+import { colors, fancyColors } from 'src/lib/constants'
+import TabBarHouse from 'src/icons/TabBarHouse'
+import TabBarSettings from 'src/icons/TabBarSettings'
+import TabBarAll from 'src/icons/TabBarAll'
+
+const { height } = Dimensions.get('screen')
 
 const toastConfig = {
   success: ({ text1, props, ...rest }: { text1: string; props: any }) => (
@@ -80,7 +83,7 @@ function App() {
         style={{
           alignItems: 'center',
           justifyContent: 'center',
-          height: Dimensions.get('screen').height,
+          height: height,
         }}
       >
         <Text>Loading...</Text>
@@ -93,23 +96,25 @@ function App() {
       <StatusBar style="auto" />
       <NavigationContainer>
         <Tab.Navigator
-          sceneContainerStyle={{ backgroundColor: 'white' }}
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color }) => {
               if (route.name === 'Home') {
-                return <HouseIcon color={color} />
+                return <TabBarHouse color={color} />
               } else if (route.name === 'Setup') {
-                return <GymIcon color={color} />
+                return <TabBarSettings color={color} />
+              } else if (route.name === 'All') {
+                return <TabBarAll color={color} />
               }
             },
           })}
           tabBarOptions={{
-            activeTintColor: 'tomato',
-            inactiveTintColor: 'gray',
+            activeTintColor: fancyColors.blue,
+            inactiveTintColor: colors.black,
+            showLabel: false,
           }}
         >
           <Tab.Screen name="Home" component={HomeScreen} />
-
+          <Tab.Screen name="All" component={AllScreen} />
           <Tab.Screen name="Setup" component={SetupScreen} />
         </Tab.Navigator>
         <Toast ref={(ref) => Toast.setRef(ref)} config={toastConfig} />

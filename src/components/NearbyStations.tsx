@@ -37,21 +37,10 @@ function NearbyStations() {
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
-          const stationObject =
-            state.userStations.find((s) => s.station_id === item.station_id) ||
-            item
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station
-                station={stationObject}
-                index={index}
-                black={
-                  state.userStations
-                    .map((us) => us.station_id)
-                    .indexOf(item.station_id) === -1
-                }
-              />
+              <Station station={item} index={index} noBorder />
             </>
           )
         }}

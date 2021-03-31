@@ -28,7 +28,7 @@ function Journeys() {
 
   return (
     <ListWrapper>
-      <Header style={{ marginBottom: 16 }}>Strekninger</Header>
+      <Header>Strekninger</Header>
       <FlatList
         keyExtractor={(item: UserJourney) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
@@ -57,9 +57,9 @@ function Journeys() {
       />
       <RowView
         style={{
-          width: journeyWidth,
+          width: journeyWidth + 20,
           justifyContent: 'space-between',
-          paddingTop: 12,
+          paddingTop: 6,
           paddingLeft: 20,
         }}
       >
@@ -69,7 +69,7 @@ function Journeys() {
           color={state.userJourneys[activeIndex].color}
         />
         <RoundedButton
-          title="Dra hit"
+          title="Åpne"
           color={state.userJourneys[activeIndex].color}
           onPress={() =>
             Linking.openURL(

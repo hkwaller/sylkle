@@ -48,11 +48,7 @@ function Stations() {
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station
-                station={item}
-                index={index}
-                Icon={<Icon color="white" />}
-              />
+              <Station station={item} index={index} Icon={<Icon />} />
             </>
           )
         }}
@@ -66,25 +62,26 @@ function Stations() {
         }}
       >
         <RoundedButton
-          title="Gå hit"
+          onPress={async () => {
+            await deleteStation(state.userStations[activeIndex].station_id)
+            Toast.show({
+              text1: `${state.userStations[activeIndex].name} er tatt bort`,
+              ...toastConfig,
+            })
+            setActiveIndex(Math.max(activeIndex - 1, 0))
+          }}
+          icon={<Text>X</Text>}
+          color={state.userStations[activeIndex].color}
+        />
+        <Spacer horizontal spacing={4} />
+        <RoundedButton
+          title="Åpne"
           color={state.userStations[activeIndex].color}
           onPress={async () =>
             Linking.openURL(
               `oslobysykkel:stations/${state.userStations[activeIndex].station_id}`
             )
           }
-        />
-        <RoundedButton
-          onPress={async () => {
-            await deleteStation(activeIndex)
-            Toast.show({
-              text1: `${state.stations[activeIndex].name} er tatt bort`,
-              ...toastConfig,
-            })
-            setActiveIndex(activeIndex)
-          }}
-          icon={<Text>X</Text>}
-          color={state.userStations[activeIndex].color}
         />
       </RowView>
     </ListWrapper>
