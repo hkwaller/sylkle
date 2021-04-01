@@ -6,7 +6,7 @@ import { ListWrapper } from 'src/components/styled'
 import { state } from 'src/lib/state'
 import AppBackground from 'src/components/AppBackground'
 import PageHeader from 'src/components/PageHeader'
-import { Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 
 function All() {
   return (

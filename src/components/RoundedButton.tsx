@@ -24,6 +24,7 @@ type Props = {
   width?: number
   onPress?: () => void
   backgroundColor?: string
+  disabled?: boolean
 }
 
 function RoundedButton({
@@ -32,6 +33,7 @@ function RoundedButton({
   icon,
   width,
   onPress,
+  disabled = false,
 }: Props) {
   const buttonScale = useSharedValue(1)
 
@@ -57,12 +59,11 @@ function RoundedButton({
       transform: [{ scale: withSpring(buttonScale.value) }],
     }
   })
-
   return (
     <TapGestureHandler
       onGestureEvent={gestureHandler}
       onHandlerStateChange={(event) => {
-        if (event.nativeEvent.state === State.END) onPress?.()
+        if (event.nativeEvent.state === State.END) !disabled && onPress?.()
       }}
     >
       <Animated.View style={style}>
@@ -71,6 +72,7 @@ function RoundedButton({
             borderColor: colors.gray,
             backgroundColor: colors.white,
             width: width || undefined,
+            opacity: disabled ? 0.2 : 1,
           }}
           transition={{ type: 'timing', duration: 400 }}
           style={[

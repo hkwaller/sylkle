@@ -6,7 +6,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native'
 import { View } from '@motify/components'
-import { UserJourney } from 'src/lib/types'
+import { JourneyType } from 'src/lib/types'
 import { ListWrapper, Header, RowView } from './styled'
 import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
@@ -30,7 +30,7 @@ function Journeys() {
     <ListWrapper>
       <Header>Strekninger</Header>
       <FlatList
-        keyExtractor={(item: UserJourney) =>
+        keyExtractor={(item: JourneyType) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
         }
         data={state.userJourneys}

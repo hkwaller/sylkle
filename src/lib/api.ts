@@ -1,8 +1,8 @@
-import { LocationCoords, Station, Status, User, UserStation } from './types'
+import { LocationCoords, StationType, Status, User } from './types'
 import { token } from '../../token'
 import { getDistanceFromLatLng } from './helpers'
-import { fancyColors, fancyColorsArray } from './constants'
 import { state } from './state'
+
 const sanityClient = require('@sanity/client')
 
 const client = sanityClient({
@@ -27,7 +27,7 @@ export async function getStations(location: LocationCoords) {
   const statusResult = await getStatus()
 
   const parsedStations = await result.data.stations
-    .map((station: Station, index: number) => {
+    .map((station: StationType, index: number) => {
       const stationStatus: Status = statusResult.data.stations[index]
 
       return {
@@ -41,7 +41,7 @@ export async function getStations(location: LocationCoords) {
         ),
       }
     })
-    .sort((a: UserStation, b: UserStation) => a.distance > b.distance)
+    .sort((a: StationType, b: StationType) => a.distance > b.distance)
 
   const query = '*[_type == "user" && name == "Hannes"]'
 
@@ -50,24 +50,27 @@ export async function getStations(location: LocationCoords) {
     const userStations = user[0].stations
       .map((userStation) => {
         const matchedStation = parsedStations.find(
-          (station: UserStation) => station.station_id === userStation.id
+          (station: StationType) => station.station_id === userStation.id
         )
         return {
           ...userStation,
           ...matchedStation,
-        } as UserStation
+        } as StationType
       })
-      .sort((a: UserStation, b: UserStation) =>
+      .sort((a: StationType, b: StationType) =>
         a.distance > b.distance ? 1 : -1
       )
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
-      const fromStation = parsedStations.find(
-        (station: UserStation) => station.station_id === userJourney.fromStation
-      )
+      const fromStation = userJourney.fromClosest
+        ? userStations[0]
+        : parsedStations.find(
+            (station: StationType) =>
+              station.station_id === userJourney.fromStation
+          )
 
       const toStation = parsedStations.find(
-        (station: UserStation) => station.station_id === userJourney.toStation
+        (station: StationType) => station.station_id === userJourney.toStation
       )
 
       return {
@@ -97,13 +100,10 @@ async function getStatus() {
   return data
 }
 
-export async function addStation(station: Station) {
+export async function addStation(station: StationType) {
   const newStation = {
     name: station.name,
     id: station.station_id,
-    color: Object.keys(fancyColors).map((k) => k)[
-      Math.floor(Math.random(fancyColorsArray.length) * 10)
-    ],
   }
 
   await client
@@ -124,9 +124,6 @@ export async function addJourney(
     fromStation: fromStation,
     toStation: toStation,
     name: name,
-    color: Object.keys(fancyColors).map((k) => k)[
-      Math.floor(Math.random(fancyColorsArray.length) * 10)
-    ],
   }
 
   await client

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, ImageBackground, View, StyleSheet } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'

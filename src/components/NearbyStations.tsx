@@ -3,7 +3,7 @@ import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { View } from '@motify/components'
 import { view } from '@risingstack/react-easy-state'
 import Toast from 'react-native-toast-message'
-import { Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
@@ -31,16 +31,19 @@ function NearbyStations() {
         horizontal
         pagingEnabled
         onScroll={onScroll}
-        snapToInterval={stationSize + 20}
         decelerationRate="fast"
+        snapToInterval={stationSize + 20}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
+          const isUserStation =
+            state.userStations.filter((s) => s.station_id === item.station_id)
+              .length > 0
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station station={item} index={index} noBorder />
+              <Station station={item} index={index} noBorder={!isUserStation} />
             </>
           )
         }}
@@ -49,6 +52,11 @@ function NearbyStations() {
       <View style={{ marginLeft: 20 }}>
         <RoundedButton
           title="Legg til"
+          disabled={
+            state.userStations.filter(
+              (s) => s.station_id === state.stations[activeIndex].station_id
+            ).length > 0
+          }
           width={stationSize}
           color={state.stations[activeIndex].color}
           onPress={async () => {

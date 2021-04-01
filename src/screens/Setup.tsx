@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Toast from 'react-native-toast-message'
 import { View } from 'moti'
 import { Header, ListWrapper } from 'src/components/styled'
-import { Station, Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import PageHeader from 'src/components/PageHeader'
 import { colors, fancyColors, toastConfig } from 'src/lib/constants'
 import RoundedButton from 'src/components/RoundedButton'
@@ -26,7 +26,7 @@ function Setup() {
     <>
       <AppBackground />
       <SafeAreaView style={styles.container}>
-        <PageHeader title="Setup" />
+        <PageHeader />
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 20 }}
@@ -106,7 +106,7 @@ function Setup() {
         onClose={() => {
           setModalVisible(false)
         }}
-        selectStation={(station: Station) => {
+        selectStation={(station: StationType) => {
           if (!fromStation) setFromStation(station)
           else setToStation(station)
         }}

@@ -1,18 +1,19 @@
 import React from 'react'
-import { Pressable, StyleSheet } from 'react-native'
+import { Pressable } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { RowView, Text } from 'src/components/styled'
 import { View } from 'moti'
-import { UserJourney } from 'src/lib/types'
-import { fancyColors, journeyWidth, shadow } from 'src/lib/constants'
+import { JourneyType } from 'src/lib/types'
+import { journeyWidth, shadow } from 'src/lib/constants'
 import BicycleIcon from 'src/icons/BicycleIcon'
 import LongArrowIcon from 'src/icons/LongArrowIcon'
 import LockIcon from 'src/icons/LockIcon'
 import Spacer from './Spacer'
 import { deleteJourney } from 'src/lib/api'
+import LocationIcon from 'src/icons/LocationIcon'
 
 type Props = {
-  journey: UserJourney
+  journey: JourneyType
   index: number
   isFlipped: boolean
 }
@@ -50,9 +51,17 @@ function Journey({ journey, index, isFlipped }: Props) {
           <Text>X</Text>
         </Pressable>
         <View>
-          <Text big medium>
-            {journey.name}
-          </Text>
+          <RowView>
+            <Text big medium>
+              {journey.name}
+            </Text>
+            {journey.fromClosest && (
+              <>
+                <Spacer horizontal spacing={4} />
+                <LocationIcon />
+              </>
+            )}
+          </RowView>
           <Text>
             {fromStation.name} - {toStation.name}
           </Text>

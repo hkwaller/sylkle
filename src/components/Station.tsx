@@ -3,25 +3,23 @@ import { StyleSheet } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { View } from '@motify/components'
 import { colors, fancyColors, shadow, stationSize } from 'src/lib/constants'
-import { UserStation, Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import { RowView, Text } from './styled'
-import { iconMapper } from 'src/lib/helpers'
 import BicycleIcon from 'src/icons/BicycleIcon'
 import LockIcon from 'src/icons/LockIcon'
 
 type Props = {
-  station: UserStation | StationType
+  station: StationType
   index: number
-  Icon?: React.ReactNode
   noBorder?: boolean
 }
 
-function Station({ station, index, Icon, noBorder = false }: Props) {
+function Station({ station, index, noBorder = false }: Props) {
   return (
     <View
       from={{ translateX: -100 * (index + 1) }}
       animate={{ translateX: 0 }}
-      style={{ paddingVertical: 10 }}
+      style={{ paddingVertical: 10, width: stationSize }}
     >
       <BlurView intensity={100} style={{ ...shadow }}>
         <View
@@ -35,12 +33,6 @@ function Station({ station, index, Icon, noBorder = false }: Props) {
               {station.name}
             </Text>
             <RowView style={{ paddingTop: 6 }}>
-              {Icon && (
-                <>
-                  {Icon}
-                  <Text style={{ paddingHorizontal: 5 }}>|</Text>
-                </>
-              )}
               <Text big>{station.distance}m</Text>
             </RowView>
           </View>

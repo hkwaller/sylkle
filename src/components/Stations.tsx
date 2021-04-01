@@ -8,7 +8,7 @@ import {
 import { view } from '@risingstack/react-easy-state'
 import { View } from '@motify/components'
 import Toast from 'react-native-toast-message'
-import { Station as StationType, UserStation } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import { Header, ListWrapper, RowView, Text } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
@@ -16,7 +16,6 @@ import { stationSize, toastConfig } from 'src/lib/constants'
 import Spacer from './Spacer'
 import { state } from 'src/lib/state'
 import { deleteStation } from 'src/lib/api'
-import { iconMapper } from 'src/lib/helpers'
 
 function Stations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -27,12 +26,11 @@ function Stations() {
 
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
-
   return (
     <ListWrapper>
       <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
       <FlatList
-        keyExtractor={(item: UserStation) => item.station_id}
+        keyExtractor={(item: StationType) => item.station_id}
         data={state.userStations}
         horizontal
         pagingEnabled
@@ -43,12 +41,10 @@ function Stations() {
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
-          const Icon = iconMapper(item.icon)
-
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station station={item} index={index} Icon={<Icon />} />
+              <Station station={item} index={index} />
             </>
           )
         }}
@@ -63,20 +59,20 @@ function Stations() {
       >
         <RoundedButton
           onPress={async () => {
-            await deleteStation(state.userStations[activeIndex].station_id)
+            const stationToDelete = state.userStations[activeIndex]
+            await deleteStation(stationToDelete.station_id)
+
             Toast.show({
-              text1: `${state.userStations[activeIndex].name} er tatt bort`,
+              text1: `${stationToDelete.name} er tatt bort`,
               ...toastConfig,
             })
             setActiveIndex(Math.max(activeIndex - 1, 0))
           }}
           icon={<Text>X</Text>}
-          color={state.userStations[activeIndex].color}
         />
         <Spacer horizontal spacing={4} />
         <RoundedButton
           title="Åpne"
-          color={state.userStations[activeIndex].color}
           onPress={async () =>
             Linking.openURL(
               `oslobysykkel:stations/${state.userStations[activeIndex].station_id}`

@@ -1,4 +1,5 @@
-export type Station = {
+export type StationType = {
+  id: string
   station_id: string
   name: string
   address: string
@@ -6,12 +7,7 @@ export type Station = {
   lon: number
   capacity: number
   distance: number
-  color: string
 } & Status
-
-export type UserStation = {
-  icon: string
-} & Station
 
 export type Status = {
   station_id: number
@@ -30,32 +26,26 @@ export type Location = {
   }
 }
 
-export type UserJourney = {
-  _key: string
-  fromStation: Station
-  toStation: Station
-  color: string
-  name: string
-}
-
-export type SanityStation = {
-  name: string
-  id: string
-  color: string
-}
-
 export type SanityJourney = {
+  _key: string
   fromStation: string
   toStation: string
-  color: string
   name: string
+  icon: string
+  fromClosest: boolean
 }
+
+export type JourneyType = {
+  _key: string
+  fromStation: StationType
+  toStation: StationType
+} & Omit<SanityJourney, 'fromStation' | 'toStation'>
 
 export type User = {
   _id: string
   name: string
-  stations: SanityStation[]
-  journeys: SanityJourney[]
+  stations: StationType[]
+  journeys: JourneyType[]
 }
 
 export type LocationCoords = {
