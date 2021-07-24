@@ -37,8 +37,7 @@ function Setup() {
             </Header>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
+                alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 marginHorizontal: 20,
                 width: width - 40,

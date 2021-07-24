@@ -7,10 +7,17 @@ import { StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { stationSize, toastConfig } from 'src/lib/constants'
+import {
+  colors,
+  fancyColors,
+  stationSize,
+  toastConfig,
+} from 'src/lib/constants'
 import Spacer from './Spacer'
 import { addStation } from 'src/lib/api'
 import { state } from 'src/lib/state'
+import HeartIcon from 'src/icons/HeartIcon'
+import { color } from 'react-native-reanimated'
 
 function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -21,6 +28,11 @@ function NearbyStations() {
 
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
+
+  const currentlyOnFavourite =
+    state.userStations.filter(
+      (s) => s.station_id === state.stations[activeIndex].station_id
+    ).length > 0
 
   return (
     <ListWrapper>
@@ -48,16 +60,14 @@ function NearbyStations() {
           )
         }}
       />
-      <Spacer spacing={6} />
-      <View style={{ marginLeft: 20 }}>
+      <View style={{ alignItems: 'flex-start', marginLeft: 20 }}>
         <RoundedButton
-          title="Legg til"
-          disabled={
-            state.userStations.filter(
-              (s) => s.station_id === state.stations[activeIndex].station_id
-            ).length > 0
+          disabled={currentlyOnFavourite}
+          icon={
+            <HeartIcon
+              color={currentlyOnFavourite ? fancyColors.red : colors.black}
+            />
           }
-          width={stationSize}
           color={state.stations[activeIndex].color}
           onPress={async () => {
             await addStation(state.stations[activeIndex])

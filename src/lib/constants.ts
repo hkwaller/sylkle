@@ -10,7 +10,7 @@ export const colors = {
 }
 
 export const stationSize = width / 2 - 10
-export const journeyWidth = width - 100
+export const journeyWidth = 300
 
 export type FancyColorsType = keyof typeof fancyColors
 

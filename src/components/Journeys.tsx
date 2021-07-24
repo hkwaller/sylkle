@@ -37,15 +37,14 @@ function Journeys() {
         horizontal
         pagingEnabled
         onScroll={onScroll}
-        snapToInterval={journeyWidth + 20}
+        snapToInterval={330}
         decelerationRate="fast"
-        ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
           return (
             <>
-              {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+              <View style={{ paddingLeft: 20 }} />
               <Journey
                 journey={item}
                 index={index}

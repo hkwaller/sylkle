@@ -58,9 +58,8 @@ function App() {
     loadFonts()
 
     async function get() {
-      const {
-        status: locationStatus,
-      } = await Location.requestPermissionsAsync()
+      const { status: locationStatus } =
+        await Location.requestPermissionsAsync()
       if (locationStatus !== 'granted') {
         return
       }
@@ -71,7 +70,15 @@ function App() {
         longitude: location.coords.longitude,
       }
 
-      await getStations(state.location)
+      const updatedState = await getStations(state.location)
+      console.log(
+        '🚀 ~ file: App.tsx ~ line 74 ~ get ~ updatedState',
+        updatedState
+      )
+
+      state.stations = updatedState.stations
+      state.userJourneys = updatedState.userJourneys
+      state.userStations = updatedState.userStations
     }
 
     get()

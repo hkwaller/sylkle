@@ -59,6 +59,7 @@ function RoundedButton({
       transform: [{ scale: withSpring(buttonScale.value) }],
     }
   })
+
   return (
     <TapGestureHandler
       onGestureEvent={gestureHandler}
@@ -72,7 +73,6 @@ function RoundedButton({
             borderColor: colors.gray,
             backgroundColor: colors.white,
             width: width || undefined,
-            opacity: disabled ? 0.2 : 1,
           }}
           transition={{ type: 'timing', duration: 400 }}
           style={[

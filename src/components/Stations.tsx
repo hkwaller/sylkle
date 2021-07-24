@@ -28,7 +28,7 @@ function Stations() {
   }
   return (
     <ListWrapper>
-      <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
+      <Header style={{ marginBottom: 12 }}>Dine stasjoner</Header>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
         data={state.userStations}

@@ -36,8 +36,8 @@ export async function getStations(location: LocationCoords) {
         distance: getDistanceFromLatLng(
           station.lat,
           station.lon,
-          __DEV__ ? 59.9041673 : location.latitude,
-          __DEV__ ? 10.7865407 : location.longitude
+          location.latitude,
+          location.longitude
         ),
       }
     })
@@ -63,7 +63,7 @@ export async function getStations(location: LocationCoords) {
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
       const fromStation = userJourney.fromClosest
-        ? userStations[0]
+        ? parsedStations[0]
         : parsedStations.find(
             (station: StationType) =>
               station.station_id === userJourney.fromStation
@@ -90,6 +90,13 @@ export async function getStations(location: LocationCoords) {
   state.stations = parsedStations
   state.userJourneys = sanityData.userJourneys || []
   state.userStations = sanityData.userStations || []
+
+  return {
+    userJourneys: sanityData.userJourneys,
+    userStations: sanityData.userStations,
+    stations: parsedStations,
+    loaded: true,
+  }
 }
 
 async function getStatus() {
