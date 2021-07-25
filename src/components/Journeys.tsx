@@ -14,6 +14,8 @@ import RoundedButton from './RoundedButton'
 import SwatchIcon from 'src/icons/SwitchIcon'
 import { view } from '@risingstack/react-easy-state'
 import { state } from 'src/lib/state'
+import Start from 'src/icons/Start'
+import Target from 'src/icons/Target'
 
 function Journeys() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -63,18 +65,33 @@ function Journeys() {
         }}
       >
         <RoundedButton
-          onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
-          icon={<SwatchIcon />}
-          color={state.userJourneys[activeIndex].color}
-        />
-        <RoundedButton
           title="Åpne"
+          icon={<Start />}
           color={state.userJourneys[activeIndex].color}
           onPress={() =>
             Linking.openURL(
               `oslobysykkel:stations/${
                 state.userJourneys[activeIndex][
                   flipped === activeIndex ? 'toStation' : 'fromStation'
+                ].station_id
+              }`
+            )
+          }
+        />
+        <RoundedButton
+          onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
+          icon={<SwatchIcon />}
+          color={state.userJourneys[activeIndex].color}
+        />
+        <RoundedButton
+          title="Åpne"
+          icon={<Target />}
+          color={state.userJourneys[activeIndex].color}
+          onPress={() =>
+            Linking.openURL(
+              `oslobysykkel:stations/${
+                state.userJourneys[activeIndex][
+                  flipped === activeIndex ? 'fromStation' : 'toStation'
                 ].station_id
               }`
             )

@@ -6,13 +6,11 @@ import Toast from 'react-native-toast-message'
 import { View } from 'moti'
 import { Header, ListWrapper } from 'src/components/styled'
 import { StationType } from 'src/lib/types'
-import PageHeader from 'src/components/PageHeader'
-import { colors, fancyColors, toastConfig } from 'src/lib/constants'
+import { fancyColors, toastConfig } from 'src/lib/constants'
 import RoundedButton from 'src/components/RoundedButton'
 import Modal from 'src/components/Modal'
 import AddJourneyButton from 'src/components/AddJourneyButton'
 import { addJourney } from 'src/lib/api'
-import AppBackground from 'src/components/AppBackground'
 
 const { width } = Dimensions.get('screen')
 
@@ -24,9 +22,7 @@ function Setup() {
 
   return (
     <>
-      <AppBackground />
       <SafeAreaView style={styles.container}>
-        <PageHeader />
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={{ marginTop: 20 }}

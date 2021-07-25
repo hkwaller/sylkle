@@ -72,18 +72,17 @@ function RoundedButton({
           animate={{
             borderColor: colors.gray,
             backgroundColor: colors.white,
-            width: width || undefined,
           }}
           transition={{ type: 'timing', duration: 400 }}
           style={[
             styles.container,
             {
               backgroundColor: backgroundColor,
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
             },
           ]}
         >
-          <Text style={{ paddingRight: title ? 16 : 0 }}>{title}</Text>
+          <Text style={{ paddingRight: title ? 8 : 0 }}>{title}</Text>
           {icon || (
             <ArrowIcon color={backgroundColor ? colors.white : undefined} />
           )}

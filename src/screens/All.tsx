@@ -4,16 +4,12 @@ import { Dimensions, FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import HorizontalStation from 'src/components/HorizontalStation'
 import { ListWrapper } from 'src/components/styled'
 import { state } from 'src/lib/state'
-import AppBackground from 'src/components/AppBackground'
-import PageHeader from 'src/components/PageHeader'
 import { StationType } from 'src/lib/types'
 
 function All() {
   return (
     <>
-      <AppBackground />
       <SafeAreaView style={styles.container}>
-        <PageHeader />
         <ListWrapper style={{ marginTop: 40 }}>
           <FlatList
             keyExtractor={(item: StationType) => item.station_id}

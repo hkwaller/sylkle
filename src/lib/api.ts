@@ -26,9 +26,11 @@ export async function getStations(location: LocationCoords) {
 
   const statusResult = await getStatus()
 
-  const parsedStations = await result.data.stations
-    .map((station: StationType, index: number) => {
-      const stationStatus: Status = statusResult.data.stations[index]
+  const parsedStations = result.data.stations
+    .map((station: StationType) => {
+      const stationStatus: Status = statusResult.data.stations.find(
+        (s: any) => s.station_id === station.station_id
+      )
 
       return {
         ...station,
@@ -85,11 +87,6 @@ export async function getStations(location: LocationCoords) {
       userJourneys,
     }
   })
-
-  state.loaded = true
-  state.stations = parsedStations
-  state.userJourneys = sanityData.userJourneys || []
-  state.userStations = sanityData.userStations || []
 
   return {
     userJourneys: sanityData.userJourneys,

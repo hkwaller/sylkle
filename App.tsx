@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Dimensions, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'
 import * as Font from 'expo-font'
@@ -12,7 +12,6 @@ import 'react-native-gesture-handler'
 import { getStations } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import { Text } from 'src/components/styled'
-
 import HomeScreen from 'src/screens/Home'
 import SetupScreen from 'src/screens/Setup'
 import AllScreen from 'src/screens/All'
@@ -48,7 +47,7 @@ function App() {
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
+        SansationRegular: require('./assets/fonts/Sansation_Regular.ttf'),
         SansationBold: require('./assets/fonts/Sansation_Bold.ttf'),
       })
 
@@ -71,10 +70,6 @@ function App() {
       }
 
       const updatedState = await getStations(state.location)
-      console.log(
-        '🚀 ~ file: App.tsx ~ line 74 ~ get ~ updatedState',
-        updatedState
-      )
 
       state.stations = updatedState.stations
       state.userJourneys = updatedState.userJourneys
@@ -84,7 +79,7 @@ function App() {
     get()
   }, [])
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || state.stations.length === 0) {
     return (
       <SafeAreaView
         style={{
@@ -101,8 +96,17 @@ function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <NavigationContainer>
+      <NavigationContainer
+        theme={{
+          ...DefaultTheme,
+          colors: {
+            ...DefaultTheme.colors,
+            background: 'white',
+          },
+        }}
+      >
         <Tab.Navigator
+          initialRouteName="Home"
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color }) => {
               if (route.name === 'Home') {
@@ -118,10 +122,13 @@ function App() {
             activeTintColor: fancyColors.blue,
             inactiveTintColor: colors.black,
             showLabel: false,
+            style: {
+              marginBottom: 10,
+            },
           }}
         >
-          <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="All" component={AllScreen} />
+          <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Setup" component={SetupScreen} />
         </Tab.Navigator>
         <Toast ref={(ref) => Toast.setRef(ref)} config={toastConfig} />

@@ -34,7 +34,8 @@ type TextProps = {
 }
 
 export const Text = styled(RNText)<TextProps>`
-  font-family: ${({ medium }) => (medium ? 'SansationBold' : 'Sansation')};
+  font-family: ${({ medium }) =>
+    medium ? 'SansationBold' : 'SansationRegular'};
   font-size: ${({ big, size }) => (size ? `${size}px` : big ? '18px' : '16px')};
   color: ${({ white }) => (white ? colors.white : colors.black)};
   text-align: ${({ center }) => (center ? 'center' : 'left')};

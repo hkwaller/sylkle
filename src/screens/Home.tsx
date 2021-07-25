@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { RefreshControl, SafeAreaView, StyleSheet } from 'react-native'
+import { RefreshControl, SafeAreaView, StyleSheet, Image } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'moti'
 import Spacer from 'src/components/Spacer'
@@ -8,41 +8,37 @@ import Journeys from 'src/components/Journeys'
 import NearbyStations from 'src/components/NearbyStations'
 import Stations from 'src/components/Stations'
 import { getStations } from 'src/lib/api'
-import PageHeader from 'src/components/PageHeader'
-import AppBackground from 'src/components/AppBackground'
 
 function App() {
   const [refreshing, setRefreshing] = useState(false)
 
   return (
-    <>
-      <AppBackground />
-      <SafeAreaView style={styles.container}>
-        <PageHeader />
-        <ScrollView
-          style={{ marginTop: 20 }}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={async () => {
-                setRefreshing(true)
-                await getStations(state.location)
-                setRefreshing(false)
-              }}
-            />
-          }
-          contentContainerStyle={{
-            paddingBottom: 200,
+    <ScrollView
+      style={{ paddingTop: 60 }}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={async () => {
+            setRefreshing(true)
+            await getStations(state.location)
+            setRefreshing(false)
           }}
-        >
-          <Spacer spacing={20} />
-          {state.userJourneys.length > 0 && <Journeys />}
-          {state.userStations.length > 0 && <Stations />}
-          {state.stations.length > 0 && <NearbyStations />}
-        </ScrollView>
-      </SafeAreaView>
-    </>
+        />
+      }
+      contentContainerStyle={{
+        paddingBottom: 200,
+      }}
+    >
+      <Image
+        source={require('../../assets/bicycle.png')}
+        style={{ marginLeft: 20 }}
+      />
+      <Spacer spacing={20} />
+      {state.userJourneys.length > 0 && <Journeys />}
+      {state.userStations.length > 0 && <Stations />}
+      {state.stations.length > 0 && <NearbyStations />}
+    </ScrollView>
   )
 }
 
