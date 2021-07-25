@@ -3,21 +3,24 @@ import { View } from '@motify/components'
 import { Dimensions, Pressable } from 'react-native'
 import ModalView from 'react-native-modal'
 import { Header, ListWrapper, Text } from './styled'
-import { fancyColors } from 'src/lib/constants'
 import {
-  FlatList,
   TextInput,
   TouchableOpacity,
+  FlatList,
+  ScrollView,
 } from 'react-native-gesture-handler'
 import { state } from 'src/lib/state'
 import Spacer from './Spacer'
-import { Station, Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import HorizontalStation from './HorizontalStation'
+import { view } from '@risingstack/react-easy-state'
+import { colors, fancyColors } from 'src/lib/constants'
+import LocationIcon from 'src/icons/LocationIcon'
 
 type Props = {
   isVisible: boolean
   onClose: () => void
-  selectStation: (station: Station) => void
+  selectStation: (station: StationType) => void
 }
 
 const { width } = Dimensions.get('screen')
@@ -30,7 +33,9 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
     if (text.length === 0) setStations(state.stations)
     else {
       setStations(
-        state.stations.filter((station: Station) => station.name.includes(text))
+        state.userStations.filter((station: StationType) =>
+          station.name.includes(text)
+        )
       )
     }
   }, [text])
@@ -39,7 +44,6 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
     <ModalView
       isVisible={isVisible}
       onDismiss={onClose}
-      swipeDirection={['down']}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
       style={{
@@ -48,9 +52,9 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
         marginBottom: -20,
       }}
     >
-      <View
+      <ScrollView
         style={{
-          backgroundColor: 'white',
+          backgroundColor: colors.gray,
           width: width,
           flex: 1,
           marginTop: 200,
@@ -85,7 +89,7 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
                     style={{
                       paddingVertical: 10,
                       paddingHorizontal: 20,
-                      backgroundColor: fancyColors[item.color],
+                      backgroundColor: fancyColors.blue,
                     }}
                   >
                     <Text white medium>
@@ -97,22 +101,48 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
             }}
           />
         </ListWrapper>
-        <TextInput
-          style={{ height: 80 }}
-          placeholder="Filtrer på stasjoner"
-          onChangeText={(text) => setText(text)}
-          defaultValue={text}
-        />
-        <ListWrapper>
+        <ListWrapper style={{ alignItems: 'flex-start' }}>
+          <TextInput
+            style={{
+              height: 60,
+              marginBottom: 20,
+              paddingHorizontal: 20,
+              fontSize: 18,
+              backgroundColor: 'white',
+              width: width - 20,
+              marginLeft: 10,
+            }}
+            placeholder="Filtrer på stasjoner"
+            onChangeText={(text) => setText(text)}
+            defaultValue={text}
+          />
           <Header style={{ marginBottom: 12 }}>Stasjoner</Header>
+          <TouchableOpacity
+            onPress={() => {}}
+            style={{
+              flexDirection: 'row',
+              padding: 20,
+              backgroundColor: colors.white,
+              width: width - 20,
+              marginBottom: 10,
+              marginLeft: 10,
+            }}
+          >
+            <LocationIcon />
+            <Text style={{ paddingLeft: 8 }}>Bruk alltid nærmeste stasjon</Text>
+          </TouchableOpacity>
           <FlatList
             keyExtractor={(item: StationType) => item.station_id}
             data={stations}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 200 }}
+            contentContainerStyle={{
+              paddingBottom: 200,
+              alignItems: 'center',
+            }}
             renderItem={({ item, index }) => {
               return (
                 <TouchableOpacity
+                  style={{ width: width }}
                   onPress={() => {
                     selectStation(item)
                     onClose()
@@ -125,8 +155,9 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
           />
           <Spacer spacing={6} />
         </ListWrapper>
-      </View>
+      </ScrollView>
     </ModalView>
   )
 }
-export default Modal
+
+export default view(Modal)

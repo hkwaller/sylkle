@@ -6,11 +6,11 @@ const { width } = Dimensions.get('screen')
 export const colors = {
   white: '#fff',
   black: '#2b2b2c',
-  gray: '#F8F8F8',
+  gray: '#DFDFDF',
 }
 
 export const stationSize = width / 2 - 10
-export const journeyWidth = width - 100
+export const journeyWidth = 300
 
 export type FancyColorsType = keyof typeof fancyColors
 
@@ -39,3 +39,14 @@ export const toastConfig = {
   visibilityTime: 2000,
   bottomOffset: 80,
 } as any
+
+export const shadow = {
+  shadowColor: '#000000',
+  shadowOffset: {
+    width: 0,
+    height: 0,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 6,
+  elevation: 5,
+}

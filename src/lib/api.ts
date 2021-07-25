@@ -1,8 +1,8 @@
-import { LocationCoords, Station, Status, User, UserStation } from './types'
+import { LocationCoords, StationType, Status, User } from './types'
 import { token } from '../../token'
 import { getDistanceFromLatLng } from './helpers'
-import { fancyColors, fancyColorsArray } from './constants'
 import { state } from './state'
+
 const sanityClient = require('@sanity/client')
 
 const client = sanityClient({
@@ -27,7 +27,7 @@ export async function getStations(location: LocationCoords) {
   const statusResult = await getStatus()
 
   const parsedStations = await result.data.stations
-    .map((station: Station, index: number) => {
+    .map((station: StationType, index: number) => {
       const stationStatus: Status = statusResult.data.stations[index]
 
       return {
@@ -36,12 +36,12 @@ export async function getStations(location: LocationCoords) {
         distance: getDistanceFromLatLng(
           station.lat,
           station.lon,
-          __DEV__ ? 59.9041673 : location.latitude,
-          __DEV__ ? 10.7865407 : location.longitude
+          location.latitude,
+          location.longitude
         ),
       }
     })
-    .sort((a: UserStation, b: UserStation) => a.distance > b.distance)
+    .sort((a: StationType, b: StationType) => a.distance > b.distance)
 
   const query = '*[_type == "user" && name == "Hannes"]'
 
@@ -50,24 +50,27 @@ export async function getStations(location: LocationCoords) {
     const userStations = user[0].stations
       .map((userStation) => {
         const matchedStation = parsedStations.find(
-          (station: UserStation) => station.station_id === userStation.id
+          (station: StationType) => station.station_id === userStation.id
         )
         return {
           ...userStation,
           ...matchedStation,
-        } as UserStation
+        } as StationType
       })
-      .sort((a: UserStation, b: UserStation) =>
+      .sort((a: StationType, b: StationType) =>
         a.distance > b.distance ? 1 : -1
       )
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
-      const fromStation = parsedStations.find(
-        (station: UserStation) => station.station_id === userJourney.fromStation
-      )
+      const fromStation = userJourney.fromClosest
+        ? parsedStations[0]
+        : parsedStations.find(
+            (station: StationType) =>
+              station.station_id === userJourney.fromStation
+          )
 
       const toStation = parsedStations.find(
-        (station: UserStation) => station.station_id === userJourney.toStation
+        (station: StationType) => station.station_id === userJourney.toStation
       )
 
       return {
@@ -82,10 +85,18 @@ export async function getStations(location: LocationCoords) {
       userJourneys,
     }
   })
+
   state.loaded = true
   state.stations = parsedStations
   state.userJourneys = sanityData.userJourneys || []
   state.userStations = sanityData.userStations || []
+
+  return {
+    userJourneys: sanityData.userJourneys,
+    userStations: sanityData.userStations,
+    stations: parsedStations,
+    loaded: true,
+  }
 }
 
 async function getStatus() {
@@ -96,13 +107,10 @@ async function getStatus() {
   return data
 }
 
-export async function addStation(station: Station) {
+export async function addStation(station: StationType) {
   const newStation = {
     name: station.name,
     id: station.station_id,
-    color: Object.keys(fancyColors).map((k) => k)[
-      Math.floor(Math.random(fancyColorsArray.length) * 10)
-    ],
   }
 
   await client
@@ -114,30 +122,38 @@ export async function addStation(station: Station) {
   await getStations(state.location)
 }
 
-export async function addJourney(fromStation: string, toStation: string) {
+export async function addJourney(
+  fromStation: string,
+  toStation: string,
+  name: string
+) {
   const sanityJourney = {
     fromStation: fromStation,
     toStation: toStation,
-    color: Object.keys(fancyColors).map((k) => k)[
-      Math.floor(Math.random(fancyColorsArray.length) * 10)
-    ],
-    name: 'Hej',
+    name: name,
   }
 
   await client
     .patch(state.userId)
     .setIfMissing({ journeys: [] })
     .insert('before', 'journeys[-1]', [
-      { _key: Math.random(), ...sanityJourney },
+      { _key: `${Math.random()}`, ...sanityJourney },
     ])
     .commit()
 
   await getStations(state.location)
 }
 
-export async function deleteStation(index: number) {
-  const stationsToRemove = [`stations[${index}]`]
+export async function deleteStation(stationId: string) {
+  const stationsToRemove = [`stations[id=="${stationId}"]`]
 
   await client.patch(state.userId).unset(stationsToRemove).commit()
+  await getStations(state.location)
+}
+
+export async function deleteJourney(key: string) {
+  const journeyToRemove = [`journeys[_key=="${key}"]`]
+
+  await client.patch(state.userId).unset(journeyToRemove).commit()
   await getStations(state.location)
 }

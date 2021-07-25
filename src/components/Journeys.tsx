@@ -6,7 +6,7 @@ import {
   NativeSyntheticEvent,
 } from 'react-native'
 import { View } from '@motify/components'
-import { UserJourney } from 'src/lib/types'
+import { JourneyType } from 'src/lib/types'
 import { ListWrapper, Header, RowView } from './styled'
 import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
@@ -28,24 +28,23 @@ function Journeys() {
 
   return (
     <ListWrapper>
-      <Header style={{ marginBottom: 16 }}>Strekninger</Header>
+      <Header>Strekninger</Header>
       <FlatList
-        keyExtractor={(item: UserJourney) =>
+        keyExtractor={(item: JourneyType) =>
           `${item.fromStation.station_id}${item.toStation.station_id}`
         }
         data={state.userJourneys}
         horizontal
         pagingEnabled
         onScroll={onScroll}
-        snapToInterval={journeyWidth + 20}
+        snapToInterval={330}
         decelerationRate="fast"
-        ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
           return (
             <>
-              {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+              <View style={{ paddingLeft: 20 }} />
               <Journey
                 journey={item}
                 index={index}
@@ -57,9 +56,9 @@ function Journeys() {
       />
       <RowView
         style={{
-          width: journeyWidth,
+          width: journeyWidth + 20,
           justifyContent: 'space-between',
-          paddingTop: 12,
+          paddingTop: 6,
           paddingLeft: 20,
         }}
       >
@@ -69,7 +68,7 @@ function Journeys() {
           color={state.userJourneys[activeIndex].color}
         />
         <RoundedButton
-          title="Dra hit"
+          title="Åpne"
           color={state.userJourneys[activeIndex].color}
           onPress={() =>
             Linking.openURL(

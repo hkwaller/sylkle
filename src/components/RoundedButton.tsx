@@ -1,7 +1,6 @@
 import React from 'react'
-import { StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { View } from 'moti'
-import { Text } from 'src/components/styled'
 import {
   State,
   TapGestureHandler,
@@ -14,8 +13,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated'
+import { Text } from 'src/components/styled'
 import ArrowIcon from 'src/icons/ArrowIcon'
-import { fancyColors } from 'src/lib/constants'
+import { colors } from 'src/lib/constants'
 
 type Props = {
   title?: string
@@ -24,15 +24,16 @@ type Props = {
   width?: number
   onPress?: () => void
   backgroundColor?: string
+  disabled?: boolean
 }
 
 function RoundedButton({
   title,
-  color = fancyColors.mint,
   backgroundColor,
   icon,
   width,
   onPress,
+  disabled = false,
 }: Props) {
   const buttonScale = useSharedValue(1)
 
@@ -63,20 +64,29 @@ function RoundedButton({
     <TapGestureHandler
       onGestureEvent={gestureHandler}
       onHandlerStateChange={(event) => {
-        if (event.nativeEvent.state === State.END) onPress?.()
+        if (event.nativeEvent.state === State.END) !disabled && onPress?.()
       }}
     >
       <Animated.View style={style}>
         <View
           animate={{
-            borderColor: backgroundColor || fancyColors[color],
+            borderColor: colors.gray,
+            backgroundColor: colors.white,
             width: width || undefined,
           }}
           transition={{ type: 'timing', duration: 400 }}
-          style={[styles.container, { backgroundColor: backgroundColor }]}
+          style={[
+            styles.container,
+            {
+              backgroundColor: backgroundColor,
+              paddingHorizontal: 20,
+            },
+          ]}
         >
-          <Text white={!!backgroundColor}>{title}</Text>
-          {icon || <ArrowIcon color={backgroundColor ? '#fff' : undefined} />}
+          <Text style={{ paddingRight: title ? 16 : 0 }}>{title}</Text>
+          {icon || (
+            <ArrowIcon color={backgroundColor ? colors.white : undefined} />
+          )}
         </View>
       </Animated.View>
     </TapGestureHandler>
@@ -86,7 +96,6 @@ function RoundedButton({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 50,
-    paddingHorizontal: 20,
     paddingVertical: 10,
     borderWidth: 2,
     justifyContent: 'space-between',

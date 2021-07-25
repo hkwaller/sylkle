@@ -3,14 +3,21 @@ import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
 import { View } from '@motify/components'
 import { view } from '@risingstack/react-easy-state'
 import Toast from 'react-native-toast-message'
-import { Station as StationType } from 'src/lib/types'
+import { StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
 import RoundedButton from './RoundedButton'
-import { stationSize, toastConfig } from 'src/lib/constants'
+import {
+  colors,
+  fancyColors,
+  stationSize,
+  toastConfig,
+} from 'src/lib/constants'
 import Spacer from './Spacer'
 import { addStation } from 'src/lib/api'
 import { state } from 'src/lib/state'
+import HeartIcon from 'src/icons/HeartIcon'
+import { color } from 'react-native-reanimated'
 
 function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -22,6 +29,11 @@ function NearbyStations() {
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
 
+  const currentlyOnFavourite =
+    state.userStations.filter(
+      (s) => s.station_id === state.stations[activeIndex].station_id
+    ).length > 0
+
   return (
     <ListWrapper>
       <Header style={{ marginBottom: 12 }}>Nærmeste stasjoner</Header>
@@ -31,36 +43,31 @@ function NearbyStations() {
         horizontal
         pagingEnabled
         onScroll={onScroll}
-        snapToInterval={stationSize + 20}
         decelerationRate="fast"
+        snapToInterval={stationSize + 20}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
-          const stationObject =
-            state.userStations.find((s) => s.station_id === item.station_id) ||
-            item
+          const isUserStation =
+            state.userStations.filter((s) => s.station_id === item.station_id)
+              .length > 0
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station
-                station={stationObject}
-                index={index}
-                black={
-                  state.userStations
-                    .map((us) => us.station_id)
-                    .indexOf(item.station_id) === -1
-                }
-              />
+              <Station station={item} index={index} noBorder={!isUserStation} />
             </>
           )
         }}
       />
-      <Spacer spacing={6} />
-      <View style={{ marginLeft: 20 }}>
+      <View style={{ alignItems: 'flex-start', marginLeft: 20 }}>
         <RoundedButton
-          title="Legg til"
-          width={stationSize}
+          disabled={currentlyOnFavourite}
+          icon={
+            <HeartIcon
+              color={currentlyOnFavourite ? fancyColors.red : colors.black}
+            />
+          }
           color={state.stations[activeIndex].color}
           onPress={async () => {
             await addStation(state.stations[activeIndex])

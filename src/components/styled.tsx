@@ -7,17 +7,15 @@ export const AppHeader = styled.Text`
   font-family: 'SansationBold';
   font-size: 40px;
   font-weight: 800;
-  margin-top: 20px;
 `
 export const Header = styled.Text`
-  font-family: 'Sansation';
+  font-family: 'SansationBold';
   font-size: 18px;
   margin-left: 20px;
 `
 
 export const ListWrapper = styled(View)`
   align-items: flex-start;
-  background-color: ${colors.gray};
   padding-top: 20px;
   padding-bottom: 20px;
 `

@@ -39,8 +39,6 @@ export default createSchema({
       fields: [
         { name: 'name', type: 'string' },
         { name: 'id', type: 'string' },
-        { name: 'color', type: 'string' },
-        { name: 'icon', type: 'string' },
       ],
     },
     {
@@ -60,9 +58,10 @@ export default createSchema({
           name: 'toStation',
           type: 'string',
         },
+        { name: 'icon', type: 'string' },
         {
-          name: 'color',
-          type: 'string',
+          name: 'fromClosest',
+          type: 'boolean',
         },
       ],
     },
