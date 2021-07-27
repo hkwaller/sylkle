@@ -9,7 +9,7 @@ export const colors = {
   gray: '#DFDFDF',
 }
 
-export const stationSize = width / 2 - 10
+export const stationSize = width / 2 + 40
 export const journeyWidth = 300
 
 export type FancyColorsType = keyof typeof fancyColors

@@ -11,15 +11,15 @@ import { ListWrapper, Header, RowView } from './styled'
 import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
 import RoundedButton from './RoundedButton'
-import SwatchIcon from 'src/icons/SwitchIcon'
 import { view } from '@risingstack/react-easy-state'
 import { state } from 'src/lib/state'
 import Start from 'src/icons/Start'
 import Target from 'src/icons/Target'
+import { Text } from 'src/components/styled'
 
 function Journeys() {
   const [activeIndex, setActiveIndex] = useState(0)
-  const [flipped, setFlipped] = useState(-1)
+  const [hiddenJourney, setHiddenJourney] = useState<JourneyType>()
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
@@ -30,10 +30,15 @@ function Journeys() {
 
   return (
     <ListWrapper>
-      <Header>Strekninger</Header>
+      <View style={{ flexDirection: 'row' }}>
+        <Header>Strekninger</Header>
+        <Text style={{ marginLeft: 6 }}>
+          {hiddenJourney && `(${hiddenJourney.name} gjemt)`}
+        </Text>
+      </View>
       <FlatList
-        keyExtractor={(item: JourneyType) =>
-          `${item.fromStation.station_id}${item.toStation.station_id}`
+        keyExtractor={(item: JourneyType, index) =>
+          `${item.fromStation.station_id}${item.toStation.station_id}${index}`
         }
         data={state.userJourneys}
         horizontal
@@ -44,14 +49,15 @@ function Journeys() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
+          if (item.toStation.name === item.fromStation.name) {
+            setHiddenJourney(item)
+            return null
+          }
+
           return (
             <>
               <View style={{ paddingLeft: 20 }} />
-              <Journey
-                journey={item}
-                index={index}
-                isFlipped={index === flipped}
-              />
+              <Journey journey={item} index={index} />
             </>
           )
         }}
@@ -67,35 +73,27 @@ function Journeys() {
         <RoundedButton
           title="Åpne"
           icon={<Start />}
-          color={state.userJourneys[activeIndex].color}
           onPress={() =>
             Linking.openURL(
-              `oslobysykkel:stations/${
-                state.userJourneys[activeIndex][
-                  flipped === activeIndex ? 'toStation' : 'fromStation'
-                ].station_id
-              }`
+              `oslobysykkel:stations/${state.userJourneys[activeIndex]['fromStation'].station_id}`
             )
           }
         />
-        <RoundedButton
-          onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
-          icon={<SwatchIcon />}
-          color={state.userJourneys[activeIndex].color}
-        />
+
         <RoundedButton
           title="Åpne"
           icon={<Target />}
-          color={state.userJourneys[activeIndex].color}
-          onPress={() =>
+          onPress={() => {
+            const stationToOpen = state.userJourneys[activeIndex][
+              'updatedToStation'
+            ]
+              ? 'updatedToStation'
+              : 'toStation'
+
             Linking.openURL(
-              `oslobysykkel:stations/${
-                state.userJourneys[activeIndex][
-                  flipped === activeIndex ? 'fromStation' : 'toStation'
-                ].station_id
-              }`
+              `oslobysykkel:stations/${state.userJourneys[activeIndex][stationToOpen].station_id}`
             )
-          }
+          }}
         />
       </RowView>
     </ListWrapper>

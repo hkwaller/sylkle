@@ -21,7 +21,12 @@ function App() {
           refreshing={refreshing}
           onRefresh={async () => {
             setRefreshing(true)
-            await getStations(state.location)
+            const updatedState: any = await getStations(state.location)
+
+            state.stations = updatedState.stations
+            state.userJourneys = updatedState.userJourneys
+            state.userStations = updatedState.userStations
+
             setRefreshing(false)
           }}
         />

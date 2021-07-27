@@ -54,6 +54,7 @@ export async function getStations(location: LocationCoords) {
         const matchedStation = parsedStations.find(
           (station: StationType) => station.station_id === userStation.id
         )
+
         return {
           ...userStation,
           ...matchedStation,
@@ -64,21 +65,37 @@ export async function getStations(location: LocationCoords) {
       )
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
-      const fromStation = userJourney.fromClosest
-        ? parsedStations[0]
-        : parsedStations.find(
-            (station: StationType) =>
-              station.station_id === userJourney.fromStation
-          )
+      const fromStation = parsedStations[0]
 
-      const toStation = parsedStations.find(
+      const toStation: StationType = parsedStations.find(
         (station: StationType) => station.station_id === userJourney.toStation
       )
+
+      let newDestination
+      if (toStation.num_docks_available === 0) {
+        newDestination = parsedStations
+          .map((station: StationType) => {
+            return {
+              ...station,
+              distance: getDistanceFromLatLng(
+                station.lat,
+                station.lon,
+                toStation.lat,
+                toStation.lon
+              ),
+            }
+          })
+          .sort((a: StationType, b: StationType) =>
+            a.distance > b.distance ? 1 : -1
+          )
+          .filter((station: StationType) => station.num_docks_available > 0)[0]
+      }
 
       return {
         ...userJourney!,
         fromStation: fromStation!,
         toStation: toStation!,
+        updatedToStation: newDestination,
       }
     })
 
@@ -119,13 +136,8 @@ export async function addStation(station: StationType) {
   await getStations(state.location)
 }
 
-export async function addJourney(
-  fromStation: string,
-  toStation: string,
-  name: string
-) {
+export async function addJourney(toStation: string, name: string) {
   const sanityJourney = {
-    fromStation: fromStation,
     toStation: toStation,
     name: name,
   }
@@ -138,7 +150,7 @@ export async function addJourney(
     ])
     .commit()
 
-  await getStations(state.location)
+  return await getStations(state.location)
 }
 
 export async function deleteStation(stationId: string) {

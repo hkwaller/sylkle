@@ -1,5 +1,11 @@
 import React, { useState } from 'react'
-import { FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
+import {
+  FlatList,
+  Linking,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+  TouchableOpacity,
+} from 'react-native'
 import { View } from '@motify/components'
 import { view } from '@risingstack/react-easy-state'
 import Toast from 'react-native-toast-message'
@@ -13,11 +19,9 @@ import {
   stationSize,
   toastConfig,
 } from 'src/lib/constants'
-import Spacer from './Spacer'
 import { addStation } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import HeartIcon from 'src/icons/HeartIcon'
-import { color } from 'react-native-reanimated'
 
 function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -52,10 +56,23 @@ function NearbyStations() {
           const isUserStation =
             state.userStations.filter((s) => s.station_id === item.station_id)
               .length > 0
+
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
-              <Station station={item} index={index} noBorder={!isUserStation} />
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(
+                    `oslobysykkel:stations/${state.userStations[activeIndex].station_id}`
+                  )
+                }}
+              >
+                <Station
+                  station={item}
+                  index={index}
+                  isUserStation={isUserStation}
+                />
+              </TouchableOpacity>
             </>
           )
         }}

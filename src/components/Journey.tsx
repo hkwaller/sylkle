@@ -1,28 +1,26 @@
 import React from 'react'
-import { Pressable } from 'react-native'
 import { RowView, Text } from 'src/components/styled'
 import { View } from 'moti'
 import { JourneyType } from 'src/lib/types'
-import { journeyWidth, shadow } from 'src/lib/constants'
+import { journeyWidth, shadow, toastConfig } from 'src/lib/constants'
 import BicycleIcon from 'src/icons/BicycleIcon'
-import LongArrowIcon from 'src/icons/LongArrowIcon'
 import LockIcon from 'src/icons/LockIcon'
-import Spacer from './Spacer'
-import { deleteJourney } from 'src/lib/api'
-import LocationIcon from 'src/icons/LocationIcon'
 import Start from 'src/icons/Start'
 import ArrowDown from 'src/icons/ArrowDown'
 import Target from 'src/icons/Target'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { deleteJourney, getStations } from 'src/lib/api'
+import Toast from 'react-native-toast-message'
+import { state } from 'src/lib/state'
+import { view } from '@risingstack/react-easy-state'
 
 type Props = {
   journey: JourneyType
   index: number
-  isFlipped: boolean
 }
 
-function Journey({ journey, index, isFlipped }: Props) {
-  const fromStation = isFlipped ? journey.toStation : journey.fromStation
-  const toStation = isFlipped ? journey.fromStation : journey.toStation
+function Journey({ journey, index }: Props) {
+  const { fromStation, toStation } = journey
 
   return (
     <View
@@ -32,55 +30,84 @@ function Journey({ journey, index, isFlipped }: Props) {
         width: journeyWidth,
         margin: 10,
         marginLeft: 0,
-        ...shadow,
         backgroundColor: 'white',
-        padding: 20,
+        padding: 25,
         borderRadius: 20,
+        ...shadow,
       }}
     >
-      <Text big medium>
-        {journey.name}
-      </Text>
-      <RowView style={{ paddingTop: 20 }}>
-        <View style={{ justifyContent: 'space-between', height: 100 }}>
-          <Start />
-          <ArrowDown />
-          <Target />
-        </View>
-        <View style={{ flex: 1, marginLeft: 8 }}>
-          <Text style={{ flex: 1 }}>{fromStation.name}</Text>
-          <Text>{toStation.name}</Text>
-        </View>
-        <View style={{ justifyContent: 'space-between', height: 100 }}>
-          <RowView>
-            <BicycleIcon />
-            <Text big style={{ marginLeft: 6 }}>
-              {fromStation.num_bikes_available}
-            </Text>
-          </RowView>
-          <RowView>
-            <LockIcon />
-            <Text big style={{ marginLeft: 6 }}>
-              {toStation.num_docks_available}
-            </Text>
-          </RowView>
-        </View>
-      </RowView>
-      <Pressable
-        onPress={() => deleteJourney(journey._key)}
-        hitSlop={30}
-        style={({ pressed }) => [
-          {
-            opacity: pressed ? 0.8 : 1,
-            position: 'absolute',
-            right: 25,
-            top: 15,
-          },
-        ]}
+      <TouchableOpacity
+        onLongPress={async () => {
+          await deleteJourney(journey._key)
+          Toast.show({
+            text1: `Strekningen ${journey.name} er tatt bort`,
+            ...toastConfig,
+          })
+
+          const updatedState: any = await getStations(state.location)
+
+          state.stations = updatedState.stations
+          state.userJourneys = updatedState.userJourneys
+          state.userStations = updatedState.userStations
+        }}
       >
-        <Text>X</Text>
-      </Pressable>
+        <Text big medium>
+          {journey.name}
+        </Text>
+        <RowView style={{ paddingTop: 10, minHeight: 100 }}>
+          <View>
+            <Start />
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+              <ArrowDown />
+            </View>
+            <Target />
+          </View>
+          <View style={{ marginLeft: 8, flex: 1 }}>
+            <Text style={{ transform: [{ translateY: -2 }] }}>
+              {fromStation.name}
+            </Text>
+            <View style={{ flex: 1 }} />
+            <View>
+              <Text
+                style={{
+                  transform: [{ translateY: 3 }],
+                  ...(journey.updatedToStation && {
+                    color: 'gray',
+                    textDecorationLine: 'line-through',
+                    textDecorationStyle: 'solid',
+                  }),
+                }}
+              >
+                {toStation.name}
+              </Text>
+              {journey.updatedToStation && (
+                <Text style={{ transform: [{ translateY: 3 }] }}>
+                  {journey.updatedToStation?.name}
+                </Text>
+              )}
+            </View>
+          </View>
+          <View>
+            <RowView style={{ marginTop: -5 }}>
+              <BicycleIcon />
+              <Text big medium style={{ marginLeft: 8, fontSize: 24 }}>
+                {fromStation.num_bikes_available}
+              </Text>
+            </RowView>
+            <View style={{ flex: 1 }} />
+            <RowView style={{ marginBottom: -5 }}>
+              <LockIcon />
+              <Text big medium style={{ marginLeft: 8, fontSize: 24 }}>
+                {journey.updatedToStation
+                  ? journey.updatedToStation.num_docks_available
+                  : toStation.num_docks_available}
+              </Text>
+            </RowView>
+          </View>
+        </RowView>
+      </TouchableOpacity>
     </View>
   )
 }
-export default Journey
+
+export default view(Journey)

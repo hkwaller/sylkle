@@ -19,6 +19,7 @@ import { colors, fancyColors } from 'src/lib/constants'
 import TabBarHouse from 'src/icons/TabBarHouse'
 import TabBarSettings from 'src/icons/TabBarSettings'
 import TabBarAll from 'src/icons/TabBarAll'
+import Loading from 'src/components/Loading'
 
 const { height } = Dimensions.get('screen')
 
@@ -88,7 +89,7 @@ function App() {
           height: height,
         }}
       >
-        <Text>Loading...</Text>
+        <Loading />
       </SafeAreaView>
     )
   }

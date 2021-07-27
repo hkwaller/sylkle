@@ -11,13 +11,13 @@ import RoundedButton from 'src/components/RoundedButton'
 import Modal from 'src/components/Modal'
 import AddJourneyButton from 'src/components/AddJourneyButton'
 import { addJourney } from 'src/lib/api'
+import { state } from 'src/lib/state'
 
 const { width } = Dimensions.get('screen')
 
 function Setup() {
   const [text, setText] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
-  const [fromStation, setFromStation] = useState<StationType | undefined>()
   const [toStation, setToStation] = useState<StationType | undefined>()
 
   return (
@@ -31,29 +31,27 @@ function Setup() {
             <Header style={{ marginLeft: 20, marginBottom: 10 }}>
               Legg til strekning
             </Header>
+
             <View
               style={{
                 alignItems: 'flex-start',
                 justifyContent: 'space-between',
                 marginHorizontal: 20,
                 width: width - 40,
+                marginTop: 20,
               }}
             >
               <AddJourneyButton
-                title={fromStation ? fromStation.name : 'Fra'}
-                onPress={() => setModalVisible(true)}
-              />
-              <AddJourneyButton
-                title={toStation ? toStation.name : 'Til'}
+                title={toStation ? toStation.name : 'Legg til destinasjon'}
                 onPress={() => setModalVisible(true)}
               />
             </View>
-            {fromStation && toStation && (
+            {toStation && (
               <TextInput
                 style={{
                   height: 60,
                   marginLeft: 20,
-                  backgroundColor: 'white',
+                  backgroundColor: '#EEEEEE',
                   width: width - 40,
                   paddingLeft: 20,
                   marginTop: 20,
@@ -64,23 +62,22 @@ function Setup() {
                 defaultValue={text}
               />
             )}
-            {fromStation && toStation && text.length > 0 ? (
-              <View
-                style={{
-                  alignSelf: 'flex-end',
-                  marginTop: 20,
-                  marginRight: 20,
-                }}
-              >
+            {toStation && text.length > 0 ? (
+              <View style={{ alignSelf: 'center', marginTop: 30 }}>
                 <RoundedButton
                   icon={<View />}
-                  onPress={() => {
-                    addJourney(
-                      fromStation.station_id,
+                  title="Legg til strekning"
+                  backgroundColor={fancyColors.mint}
+                  onPress={async () => {
+                    const updatedState: any = await addJourney(
                       toStation?.station_id,
                       text
                     )
-                    setFromStation(undefined)
+
+                    state.stations = updatedState.stations
+                    state.userJourneys = updatedState.userJourneys
+                    state.userStations = updatedState.userStations
+
                     setToStation(undefined)
                     setText('')
                     Toast.show({
@@ -88,8 +85,6 @@ function Setup() {
                       ...toastConfig,
                     })
                   }}
-                  title="Legg til strekning"
-                  backgroundColor={fancyColors.mint}
                 />
               </View>
             ) : null}
@@ -102,8 +97,7 @@ function Setup() {
           setModalVisible(false)
         }}
         selectStation={(station: StationType) => {
-          if (!fromStation) setFromStation(station)
-          else setToStation(station)
+          setToStation(station)
         }}
       />
     </>
