@@ -1,5 +1,8 @@
 import React, { Fragment, useState } from 'react'
-import { Image, ScrollView, View } from 'react-native'
+import { Linking, Pressable, ScrollView, View } from 'react-native'
+import { view } from '@risingstack/react-easy-state'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useNavigation } from '@react-navigation/native'
 import Spacer from 'src/components/Spacer'
 import { Header } from 'src/components/styled'
 import Target from 'src/icons/Target'
@@ -8,15 +11,15 @@ import { JourneyType, StationType } from 'src/lib/types'
 import { useEffect } from 'react'
 import { getNearestStations } from 'src/lib/helpers'
 import { state } from 'src/lib/state'
-import { view } from '@risingstack/react-easy-state'
 import Station from 'src/components/Station'
+import Back from 'src/icons/Back'
 
 type Props = {}
 
 function JourneyDetails(props: Props) {
   const [fromStations, setFromStations] = useState<StationType[]>([])
   const [toStations, setToStations] = useState<StationType[]>([])
-
+  const navigation = useNavigation()
   const journey: JourneyType = props.route.params.journey
 
   useEffect(() => {
@@ -36,13 +39,9 @@ function JourneyDetails(props: Props) {
       }}
     >
       <View style={{ marginLeft: 20, marginBottom: 50 }}>
-        <Image
-          source={require('../../assets/bicycle.png')}
-          style={{ width: 50, height: 30 }}
-          height={30}
-          width={50}
-          resizeMode="contain"
-        />
+        <Pressable onPress={() => navigation.goBack()} hitSlop={40}>
+          <Back />
+        </Pressable>
         <Spacer spacing={20} />
         <Header style={{ marginLeft: 0, fontSize: 30 }}>{journey.name}</Header>
         <View
@@ -52,26 +51,38 @@ function JourneyDetails(props: Props) {
           <Text style={{ marginLeft: 8 }}>{journey.toStation.name}</Text>
         </View>
       </View>
-      <Header>Steder rundt deg som har sykler</Header>
+      <Header>Sykler i nærheten av deg</Header>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {fromStations.map((station, index) => {
           return (
             <Fragment key={index}>
               <Spacer spacing={10} horizontal />
-              <Station index={index} {...{ station }} />
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(`oslobysykkel:stations/${station.station_id}`)
+                }}
+              >
+                <Station index={index} {...{ station }} hideLocks />
+              </TouchableOpacity>
             </Fragment>
           )
         })}
       </ScrollView>
 
       <Spacer spacing={20} />
-      <Header>Steder rundt {journey.toStation.name} som har sykler</Header>
+      <Header>Låser i nærheten av {journey.toStation.name}</Header>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {toStations.map((station, index) => {
           return (
             <Fragment key={index}>
               <Spacer spacing={10} horizontal />
-              <Station index={index} {...{ station }} />
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL(`oslobysykkel:stations/${station.station_id}`)
+                }}
+              >
+                <Station index={index} {...{ station }} hideBikes />
+              </TouchableOpacity>
             </Fragment>
           )
         })}
@@ -79,4 +90,5 @@ function JourneyDetails(props: Props) {
     </ScrollView>
   )
 }
+
 export default view(JourneyDetails)

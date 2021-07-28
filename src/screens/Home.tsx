@@ -14,7 +14,7 @@ function App() {
 
   return (
     <ScrollView
-      style={{ paddingTop: 60 }}
+      style={{ paddingTop: 80 }}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl

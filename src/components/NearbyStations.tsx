@@ -53,10 +53,6 @@ function NearbyStations() {
         contentContainerStyle={{ paddingRight: 200 }}
         ItemSeparatorComponent={() => <View style={{ paddingRight: 20 }} />}
         renderItem={({ item, index }) => {
-          const isUserStation =
-            state.userStations.filter((s) => s.station_id === item.station_id)
-              .length > 0
-
           return (
             <>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
@@ -67,11 +63,7 @@ function NearbyStations() {
                   )
                 }}
               >
-                <Station
-                  station={item}
-                  index={index}
-                  isUserStation={isUserStation}
-                />
+                <Station station={item} index={index} />
               </TouchableOpacity>
             </>
           )
@@ -85,6 +77,7 @@ function NearbyStations() {
               color={currentlyOnFavourite ? fancyColors.red : colors.black}
             />
           }
+          title="Legg til"
           color={state.stations[activeIndex].color}
           onPress={async () => {
             await addStation(state.stations[activeIndex])

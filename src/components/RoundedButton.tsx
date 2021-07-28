@@ -72,6 +72,7 @@ function RoundedButton({
           animate={{
             borderColor: colors.gray,
             backgroundColor: colors.white,
+            opacity: disabled ? 0.4 : 1,
           }}
           transition={{ type: 'timing', duration: 400 }}
           style={[

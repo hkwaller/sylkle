@@ -7,14 +7,26 @@ import { RowView, Text } from './styled'
 import BicycleIcon from 'src/icons/BicycleIcon'
 import LockIcon from 'src/icons/LockIcon'
 import Spacer from './Spacer'
+import HeartIcon from 'src/icons/HeartIcon'
+import { state } from 'src/lib/state'
 
 type Props = {
   station: StationType
   index: number
-  isUserStation?: boolean
+  hideLocks?: boolean
+  hideBikes?: boolean
 }
 
-function Station({ station, index, isUserStation = false }: Props) {
+function Station({
+  station,
+  index,
+  hideLocks = false,
+  hideBikes = false,
+}: Props) {
+  const isUserStation =
+    state.userStations.filter((s) => s.station_id === station.station_id)
+      .length > 0
+
   return (
     <View
       from={{ translateX: -100 * (index + 1) }}
@@ -31,6 +43,11 @@ function Station({ station, index, isUserStation = false }: Props) {
           },
         ]}
       >
+        {isUserStation && (
+          <View style={{ position: 'absolute', right: 20, top: 20 }}>
+            <HeartIcon color={fancyColors.red} />
+          </View>
+        )}
         <View
           style={{
             alignItems: 'center',
@@ -51,19 +68,25 @@ function Station({ station, index, isUserStation = false }: Props) {
             padding: 20,
           }}
         >
-          <RowView>
-            <BicycleIcon />
-            <Text size={30} medium style={{ marginLeft: 8 }}>
-              {station.num_bikes_available}
-            </Text>
-          </RowView>
-          <Spacer horizontal spacing={20} />
-          <RowView>
-            <Text size={30} medium style={{ marginRight: 8 }}>
-              {station.num_docks_available}
-            </Text>
-            <LockIcon />
-          </RowView>
+          {!hideBikes && (
+            <>
+              <RowView>
+                <BicycleIcon />
+                <Text size={30} medium style={{ marginLeft: 8 }}>
+                  {station.num_bikes_available}
+                </Text>
+              </RowView>
+            </>
+          )}
+          {!hideBikes && !hideLocks && <Spacer horizontal spacing={20} />}
+          {!hideLocks && (
+            <RowView>
+              <LockIcon />
+              <Text size={30} medium style={{ marginLeft: 8 }}>
+                {station.num_docks_available}
+              </Text>
+            </RowView>
+          )}
         </RowView>
       </View>
     </View>
