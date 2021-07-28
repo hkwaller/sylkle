@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Pressable } from 'react-native'
+import { Dimensions, Pressable, View } from 'react-native'
 import ModalView from 'react-native-modal'
 import { view } from '@risingstack/react-easy-state'
 import { Header, ListWrapper, Text } from './styled'
@@ -43,6 +43,7 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
       onDismiss={onClose}
       onBackdropPress={onClose}
       onSwipeComplete={onClose}
+      swipeDirection="down"
       style={{
         alignItems: 'center',
         justifyContent: 'flex-end',
@@ -61,16 +62,24 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
       </Pressable>
 
       <ListWrapper style={{ alignItems: 'flex-start', marginTop: 20 }}>
+        <Header
+          style={{
+            marginBottom: 10,
+            marginLeft: stations.length === 0 ? 0 : 20,
+          }}
+        >
+          Stasjoner
+        </Header>
         <TextInput
           style={{
             height: 60,
-            marginBottom: 20,
             paddingHorizontal: 20,
             fontSize: 18,
             backgroundColor: 'white',
             width: width - 50,
             borderWidth: 2,
             alignSelf: 'center',
+            marginBottom: 8,
             borderColor: fancyColors.lightBlue,
           }}
           placeholder="Filtrer på stasjoner"
@@ -85,9 +94,6 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
           contentContainerStyle={{
             paddingBottom: 200,
           }}
-          ListHeaderComponent={
-            <Header style={{ marginBottom: -8 }}>Stasjoner</Header>
-          }
           renderItem={({ item, index }) => {
             return (
               <TouchableOpacity

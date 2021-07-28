@@ -16,10 +16,34 @@ import { state } from 'src/lib/state'
 import Start from 'src/icons/Start'
 import Target from 'src/icons/Target'
 import { Text } from 'src/components/styled'
+import { useEffect } from 'react'
 
 function Journeys() {
+  const [journeys, setJourneys] = useState<{
+    visible: JourneyType[]
+    hidden: JourneyType[]
+  }>()
+
   const [activeIndex, setActiveIndex] = useState(0)
-  const [hiddenJourney, setHiddenJourney] = useState<JourneyType>()
+
+  useEffect(() => {
+    const filteredJourneys = state.userJourneys.reduce(
+      (acc, val: JourneyType) => {
+        if (val.fromStation.name === val.toStation.name) {
+          acc.hidden.push(val)
+        } else {
+          acc.visible.push(val)
+        }
+
+        return acc
+      },
+      {
+        visible: [],
+        hidden: [],
+      }
+    )
+    setJourneys(filteredJourneys)
+  }, [state.userJourneys])
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
@@ -33,14 +57,15 @@ function Journeys() {
       <View style={{ flexDirection: 'row' }}>
         <Header>Strekninger</Header>
         <Text style={{ marginLeft: 6 }}>
-          {hiddenJourney && `(${hiddenJourney.name} gjemt)`}
+          {(journeys?.hidden?.length || 0) > 0 &&
+            `(${journeys?.hidden?.length} gjemt)`}
         </Text>
       </View>
       <FlatList
         keyExtractor={(item: JourneyType, index) =>
           `${item.fromStation.station_id}${item.toStation.station_id}${index}`
         }
-        data={state.userJourneys}
+        data={journeys?.visible}
         horizontal
         pagingEnabled
         onScroll={onScroll}
@@ -49,11 +74,6 @@ function Journeys() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
-          if (item.toStation.name === item.fromStation.name) {
-            setHiddenJourney(item)
-            return null
-          }
-
           return (
             <>
               <View style={{ paddingLeft: 20 }} />

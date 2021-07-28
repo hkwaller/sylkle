@@ -65,7 +65,9 @@ export async function getStations(location: LocationCoords) {
       )
 
     const userJourneys = user[0].journeys?.map((userJourney) => {
-      const fromStation = parsedStations[0]
+      const fromStation = parsedStations.filter(
+        (station: StationType) => station.num_bikes_available > 0
+      )[0]
 
       const toStation: StationType = parsedStations.find(
         (station: StationType) => station.station_id === userJourney.toStation
