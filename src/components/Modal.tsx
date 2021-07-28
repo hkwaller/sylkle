@@ -42,8 +42,7 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
       isVisible={isVisible}
       onDismiss={onClose}
       onBackdropPress={onClose}
-      onSwipeComplete={onClose}
-      swipeDirection="down"
+      propagateSwipe
       style={{
         alignItems: 'center',
         justifyContent: 'flex-end',

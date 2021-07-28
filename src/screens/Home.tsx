@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { RefreshControl, SafeAreaView, StyleSheet, Image } from 'react-native'
+import { RefreshControl, StyleSheet, Image } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'moti'
 import Spacer from 'src/components/Spacer'
@@ -37,7 +37,10 @@ function App() {
     >
       <Image
         source={require('../../assets/bicycle.png')}
-        style={{ marginLeft: 20 }}
+        style={{ marginLeft: 20, width: 50, height: 30 }}
+        height={30}
+        width={50}
+        resizeMode="contain"
       />
       <Spacer spacing={20} />
       {state.userJourneys.length > 0 && <Journeys />}

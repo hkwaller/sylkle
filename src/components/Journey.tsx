@@ -1,6 +1,11 @@
 import React from 'react'
 import { RowView, Text } from 'src/components/styled'
 import { View } from 'moti'
+import { useNavigation } from '@react-navigation/native'
+import Toast from 'react-native-toast-message'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { view } from '@risingstack/react-easy-state'
+
 import { JourneyType } from 'src/lib/types'
 import { journeyWidth, shadow, toastConfig } from 'src/lib/constants'
 import BicycleIcon from 'src/icons/BicycleIcon'
@@ -8,11 +13,9 @@ import LockIcon from 'src/icons/LockIcon'
 import Start from 'src/icons/Start'
 import ArrowDown from 'src/icons/ArrowDown'
 import Target from 'src/icons/Target'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { deleteJourney, getStations } from 'src/lib/api'
-import Toast from 'react-native-toast-message'
 import { state } from 'src/lib/state'
-import { view } from '@risingstack/react-easy-state'
+import ArrowIcon from 'src/icons/ArrowIcon'
 
 type Props = {
   journey: JourneyType
@@ -20,6 +23,7 @@ type Props = {
 }
 
 function Journey({ journey, index }: Props) {
+  const navigation = useNavigation()
   const { fromStation, toStation } = journey
 
   return (
@@ -37,6 +41,9 @@ function Journey({ journey, index }: Props) {
       }}
     >
       <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('Details', { journey })
+        }}
         onLongPress={async () => {
           await deleteJourney(journey._key)
           Toast.show({
@@ -51,10 +58,13 @@ function Journey({ journey, index }: Props) {
           state.userStations = updatedState.userStations
         }}
       >
+        <View style={{ position: 'absolute', top: 5, right: 5 }}>
+          <ArrowIcon />
+        </View>
         <Text big medium>
           {journey.name}
         </Text>
-        <RowView style={{ paddingTop: 10, minHeight: 100 }}>
+        <RowView style={{ paddingTop: 20, minHeight: 100 }}>
           <View>
             <Start />
             <View style={{ flex: 1, justifyContent: 'center' }}>

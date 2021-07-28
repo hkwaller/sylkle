@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FlatList,
   Linking,
@@ -16,7 +16,6 @@ import { state } from 'src/lib/state'
 import Start from 'src/icons/Start'
 import Target from 'src/icons/Target'
 import { Text } from 'src/components/styled'
-import { useEffect } from 'react'
 
 function Journeys() {
   const [journeys, setJourneys] = useState<{
@@ -55,10 +54,10 @@ function Journeys() {
   return (
     <ListWrapper>
       <View style={{ flexDirection: 'row' }}>
-        <Header>Strekninger</Header>
+        <Header>Destinasjoner</Header>
         <Text style={{ marginLeft: 6 }}>
           {(journeys?.hidden?.length || 0) > 0 &&
-            `(${journeys?.hidden?.length} gjemt)`}
+            `(${journeys?.hidden[0].name} gjemt)`}
         </Text>
       </View>
       <FlatList

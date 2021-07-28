@@ -9,6 +9,8 @@ import { SafeAreaView } from '@motify/components'
 import Toast from 'react-native-toast-message'
 import { StatusBar } from 'expo-status-bar'
 import 'react-native-gesture-handler'
+import { createStackNavigator } from '@react-navigation/stack'
+
 import { getStations } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import { Text } from 'src/components/styled'
@@ -20,6 +22,7 @@ import TabBarHouse from 'src/icons/TabBarHouse'
 import TabBarSettings from 'src/icons/TabBarSettings'
 import TabBarAll from 'src/icons/TabBarAll'
 import Loading from 'src/components/Loading'
+import JourneyDetails from 'src/screens/JourneyDetails'
 
 const { height } = Dimensions.get('screen')
 
@@ -38,6 +41,21 @@ const toastConfig = {
       {props.text2 && <Text white>{props.text2}</Text>}
     </View>
   ),
+}
+
+const JourneyStack = createStackNavigator()
+
+function JourneyStackScreen() {
+  return (
+    <JourneyStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <JourneyStack.Screen name="Home" component={HomeScreen} />
+      <JourneyStack.Screen name="Details" component={JourneyDetails} />
+    </JourneyStack.Navigator>
+  )
 }
 
 const Tab = createBottomTabNavigator()
@@ -129,7 +147,7 @@ function App() {
           }}
         >
           <Tab.Screen name="All" component={AllScreen} />
-          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Home" component={JourneyStackScreen} />
           <Tab.Screen name="Setup" component={SetupScreen} />
         </Tab.Navigator>
         <Toast ref={(ref) => Toast.setRef(ref)} config={toastConfig} />

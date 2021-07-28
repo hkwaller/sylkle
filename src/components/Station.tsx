@@ -11,7 +11,7 @@ import Spacer from './Spacer'
 type Props = {
   station: StationType
   index: number
-  isUserStation: boolean
+  isUserStation?: boolean
 }
 
 function Station({ station, index, isUserStation = false }: Props) {

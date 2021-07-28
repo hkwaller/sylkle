@@ -17,7 +17,6 @@ export const Header = styled.Text`
 export const ListWrapper = styled(View)`
   align-items: flex-start;
   padding-top: 20px;
-  padding-bottom: 20px;
 `
 
 export const RowView = styled(View)`
