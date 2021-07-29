@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Dimensions, View } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { AppState, Dimensions, View } from 'react-native'
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'
@@ -62,6 +62,34 @@ const Tab = createBottomTabNavigator()
 
 function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false)
+  const appState = useRef(AppState.currentState)
+
+  useEffect(() => {
+    AppState.addEventListener('change', _handleAppStateChange)
+
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange)
+    }
+  }, [])
+
+  const _handleAppStateChange = async (nextAppState: any) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      const location = await Location.getCurrentPositionAsync({})
+
+      state.location = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }
+
+      const updatedState = await getStations(state.location)
+      updateState(updatedState)
+    }
+
+    appState.current = nextAppState
+  }
 
   useEffect(() => {
     async function loadFonts() {
@@ -89,14 +117,17 @@ function App() {
       }
 
       const updatedState = await getStations(state.location)
-
-      state.stations = updatedState.stations
-      state.userJourneys = updatedState.userJourneys
-      state.userStations = updatedState.userStations
+      updateState(updatedState)
     }
 
     get()
   }, [])
+
+  function updateState(newState: any) {
+    state.stations = newState.stations
+    state.userJourneys = newState.userJourneys
+    state.userStations = newState.userStations
+  }
 
   if (!fontsLoaded || state.stations.length === 0) {
     return (

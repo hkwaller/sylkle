@@ -19,9 +19,10 @@ import {
   stationSize,
   toastConfig,
 } from 'src/lib/constants'
-import { addStation } from 'src/lib/api'
+import { addStation, deleteStation } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import HeartIcon from 'src/icons/HeartIcon'
+import RemoveIcon from 'src/icons/RemoveIcon'
 
 function NearbyStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -69,7 +70,15 @@ function NearbyStations() {
           )
         }}
       />
-      <View style={{ alignItems: 'flex-start', marginLeft: 20 }}>
+      <View
+        style={{
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginLeft: 20,
+          width: stationSize,
+        }}
+      >
         <RoundedButton
           disabled={currentlyOnFavourite}
           icon={
@@ -80,10 +89,31 @@ function NearbyStations() {
           title="Legg til"
           color={state.stations[activeIndex].color}
           onPress={async () => {
-            await addStation(state.stations[activeIndex])
-
+            const t = await addStation(state.stations[activeIndex])
+            state.userStations = t
             Toast.show({
               text1: `${state.stations[activeIndex].name} er lagt til`,
+              ...toastConfig,
+            })
+          }}
+        />
+        <RoundedButton
+          disabled={!currentlyOnFavourite}
+          icon={
+            <RemoveIcon
+              color={currentlyOnFavourite ? fancyColors.red : colors.black}
+            />
+          }
+          title="Fjern"
+          color={state.stations[activeIndex].color}
+          onPress={async () => {
+            await deleteStation(state.stations[activeIndex])
+            state.userStations = state.userStations.filter(
+              (s: StationType) =>
+                s.station_id !== state.stations[activeIndex].station_id
+            )
+            Toast.show({
+              text1: `${state.stations[activeIndex].name} er tatt bort til`,
               ...toastConfig,
             })
           }}

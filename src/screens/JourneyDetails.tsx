@@ -14,7 +14,9 @@ import { state } from 'src/lib/state'
 import Station from 'src/components/Station'
 import Back from 'src/icons/Back'
 
-type Props = {}
+type Props = {
+  route: any
+}
 
 function JourneyDetails(props: Props) {
   const [fromStations, setFromStations] = useState<StationType[]>([])

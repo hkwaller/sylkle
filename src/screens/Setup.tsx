@@ -74,12 +74,11 @@ function Setup() {
                       text
                     )
 
-                    state.stations = updatedState.stations
-                    state.userJourneys = updatedState.userJourneys
-                    state.userStations = updatedState.userStations
+                    state.userJourneys = updatedState
 
                     setToStation(undefined)
                     setText('')
+
                     Toast.show({
                       text1: `Strekningen ${text} er lagt til`,
                       ...toastConfig,

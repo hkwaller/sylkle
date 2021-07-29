@@ -7,12 +7,16 @@ import {
 } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { View } from '@motify/components'
+import Toast from 'react-native-toast-message'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StationType } from 'src/lib/types'
 import { Header, ListWrapper } from './styled'
 import Station from './Station'
-import { stationSize } from 'src/lib/constants'
+import { fancyColors, stationSize, toastConfig } from 'src/lib/constants'
 import { state } from 'src/lib/state'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import RoundedButton from './RoundedButton'
+import RemoveIcon from 'src/icons/RemoveIcon'
+import { deleteStation } from 'src/lib/api'
 
 function Stations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -23,6 +27,7 @@ function Stations() {
 
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
+
   return (
     <ListWrapper>
       <Header style={{ marginBottom: 12 }}>Dine stasjoner</Header>
@@ -54,6 +59,36 @@ function Stations() {
           )
         }}
       />
+      <View
+        style={{
+          alignItems: 'flex-start',
+          flexDirection: 'row',
+          justifyContent: 'flex-end',
+          marginLeft: 20,
+          width: stationSize,
+        }}
+      >
+        <RoundedButton
+          icon={<RemoveIcon color={fancyColors.red} />}
+          title="Fjern"
+          color={state.stations[activeIndex].color}
+          onPress={async () => {
+            await deleteStation(state.userStations[activeIndex].station_id)
+
+            state.userStations = state.userStations.filter(
+              (s: StationType) =>
+                s.station_id !== state.userStations[activeIndex].station_id
+            )
+
+            Toast.show({
+              text1: `${state.userStations[activeIndex].name} er tatt bort`,
+              ...toastConfig,
+            })
+
+            setActiveIndex(Math.max(0, activeIndex - 1))
+          }}
+        />
+      </View>
     </ListWrapper>
   )
 }
