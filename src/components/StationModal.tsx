@@ -8,6 +8,7 @@ import {
   FlatList,
 } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Toast from 'react-native-toast-message'
 import Animated, {
   withSpring,
   withTiming,
@@ -19,20 +20,19 @@ import { state } from 'src/lib/state'
 import Spacer from './Spacer'
 import { StationType } from 'src/lib/types'
 import HorizontalStation from './HorizontalStation'
-import { colors, fancyColors, shadow } from 'src/lib/constants'
+import { colors, fancyColors, shadow, toastConfig } from 'src/lib/constants'
+import { addStation } from 'src/lib/api'
 
 type Props = {
   isVisible: boolean
   onClose: () => void
-  selectStation: (station: StationType) => void
 }
 
 const { width } = Dimensions.get('screen')
 const AnimatedSafeArea = Animated.createAnimatedComponent(SafeAreaView)
 
-function Modal({ isVisible, onClose, selectStation }: Props) {
+function StationModal({ isVisible, onClose }: Props) {
   const [text, setText] = useState('')
-  const [name, setName] = useState('')
   const [selectedStation, setSelectedStation] = useState<
     StationType | undefined
   >()
@@ -64,7 +64,6 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
 
   function close() {
     setText('')
-    setName('')
     setSelectedStation(undefined)
     y.value = withSpring(1000)
   }
@@ -106,20 +105,6 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
                   marginLeft: stations.length === 0 ? 0 : 20,
                 }}
               >
-                Navn på reise
-              </Header>
-              <TextInput
-                style={[styles.input, { marginBottom: 20 }]}
-                placeholder="Skriv navn. Eg. Jobb, Hjemme"
-                onChangeText={(text) => setName(text)}
-                defaultValue={name}
-              />
-              <Header
-                style={{
-                  marginBottom: 10,
-                  marginLeft: stations.length === 0 ? 0 : 20,
-                }}
-              >
                 Stasjoner
               </Header>
               <TextInput
@@ -135,8 +120,6 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
               <TouchableOpacity
                 style={{ width: width }}
                 onPress={() => {
-                  // selectStation(item)
-                  // onClose()
                   setSelectedStation(item)
                 }}
               >
@@ -166,11 +149,23 @@ function Modal({ isVisible, onClose, selectStation }: Props) {
       </ListWrapper>
       <AnimatedSafeArea style={[styles.container, animatedStyle]}>
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
+            if (!selectedStation) return
+
+            const updatedStations: any = await addStation(selectedStation)
+
+            state.userStations = updatedStations
+
+            Toast.show({
+              text1: `${selectedStation.name} er lagt til`,
+              ...toastConfig,
+            })
+
             setText('')
-            setName('')
             setSelectedStation(undefined)
             y.value = withSpring(1000)
+
+            onClose()
           }}
         >
           <Text big medium>
@@ -205,4 +200,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default view(Modal)
+export default view(StationModal)

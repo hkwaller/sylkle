@@ -6,7 +6,7 @@ function LogoBike({
   hideBorder = false,
 }: {
   color?: string
-  hideBorder: boolean
+  hideBorder?: boolean
 }) {
   return (
     <Svg width={85} height={96} viewBox="0 0 85 96" fill="none">

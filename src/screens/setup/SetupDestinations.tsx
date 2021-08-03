@@ -10,12 +10,7 @@ import { View } from '@motify/components'
 import { view } from '@risingstack/react-easy-state'
 import Toast from 'react-native-toast-message'
 import { JourneyType } from 'src/lib/types'
-import {
-  fancyColors,
-  journeyWidth,
-  shadow,
-  toastConfig,
-} from 'src/lib/constants'
+import { fancyColors, shadow, toastConfig } from 'src/lib/constants'
 import { state } from 'src/lib/state'
 import { Header, ListWrapper, Text } from 'src/components/styled'
 import RoundedButton from 'src/components/RoundedButton'
@@ -51,7 +46,7 @@ function SetupJourneys() {
             <>
               <View style={{ paddingLeft: 20 }} />
               <TouchableOpacity style={styles.button}>
-                <Header>{item.name}</Header>
+                <Header style={{ marginLeft: 0 }}>{item.name}</Header>
                 <Text>{item.toStation.name}</Text>
               </TouchableOpacity>
             </>
@@ -62,7 +57,6 @@ function SetupJourneys() {
         style={{
           alignItems: 'flex-start',
           flexDirection: 'row',
-          justifyContent: 'flex-end',
           marginLeft: 20,
           width: 200,
           marginTop: 10,
@@ -71,7 +65,6 @@ function SetupJourneys() {
         <RoundedButton
           icon={<RemoveIcon color={fancyColors.black} />}
           title="Fjern"
-          color={state.stations[activeIndex].color}
           onPress={async () => {
             await deleteJourney(state.userJourneys[activeIndex]._key)
 
@@ -104,7 +97,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
     minWidth: 200,
-    alignItems: 'center',
   },
   scrollContainer: { overflow: 'visible', marginTop: 20, marginBottom: 20 },
   scrollHeader: { fontSize: 20 },

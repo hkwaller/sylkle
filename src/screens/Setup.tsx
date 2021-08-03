@@ -4,14 +4,16 @@ import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'react-native-gesture-handler'
 import { View } from 'moti'
 import { Header } from 'src/components/styled'
-import Modal from 'src/components/Modal'
+import DestinationModal from 'src/components/DestinationModal'
 import { shadow } from 'src/lib/constants'
 import SmallRoundedButton from 'src/components/SmallRoundedButton'
 import SetupStations from './setup/SetupStations'
 import SetupDestinations from './setup/SetupDestinations'
+import StationModal from 'src/components/StationModal'
 
 function Setup() {
   const [modalVisible, setModalVisible] = useState(false)
+  const [stationModalVisible, setStationModalVisible] = useState(false)
 
   return (
     <>
@@ -30,14 +32,29 @@ function Setup() {
           </View>
 
           <SetupDestinations />
+
+          <View style={styles.headerContainer}>
+            <Header style={styles.scrollHeader}>Dine stasjoner</Header>
+
+            <SmallRoundedButton
+              title="Legg til"
+              onPress={() => setStationModalVisible(true)}
+            />
+          </View>
+
           <SetupStations />
         </ScrollView>
       </SafeAreaView>
-      <Modal
-        selectStation={() => {}}
+      <DestinationModal
         isVisible={modalVisible}
         onClose={() => {
           setModalVisible(false)
+        }}
+      />
+      <StationModal
+        isVisible={stationModalVisible}
+        onClose={() => {
+          setStationModalVisible(false)
         }}
       />
     </>

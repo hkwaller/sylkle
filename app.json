@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "sylkle",
+    "name": "sykle.",
     "slug": "sylkle",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "no.krawaller.sylkle",
-      "buildNumber": "1.0.4"
+      "buildNumber": "1.0.5"
     },
     "android": {
       "adaptiveIcon": {

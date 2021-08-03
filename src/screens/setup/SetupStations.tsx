@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import {
   FlatList,
   NativeScrollEvent,
@@ -15,8 +15,7 @@ import { state } from 'src/lib/state'
 import RemoveIcon from 'src/icons/RemoveIcon'
 import { deleteStation } from 'src/lib/api'
 import RoundedButton from 'src/components/RoundedButton'
-import { Header, Text } from 'src/components/styled'
-import SmallRoundedButton from 'src/components/SmallRoundedButton'
+import { ListWrapper, Text } from 'src/components/styled'
 
 function SetupStations() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -29,11 +28,7 @@ function SetupStations() {
   }
 
   return (
-    <>
-      <View style={styles.headerContainer}>
-        <Header style={styles.scrollHeader}>Dine stasjoner</Header>
-        <SmallRoundedButton title="Legg til" onPress={() => {}} />
-      </View>
+    <ListWrapper>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
         data={state.userStations}
@@ -45,14 +40,14 @@ function SetupStations() {
         decelerationRate="fast"
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
-        renderItem={({ item, index }) => {
+        renderItem={({ item, index }: { item: StationType; index: number }) => {
           return (
-            <>
+            <Fragment key={item.station_id}>
               {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
               <TouchableOpacity style={styles.button}>
                 <Text>{item.name}</Text>
               </TouchableOpacity>
-            </>
+            </Fragment>
           )
         }}
       />
@@ -60,7 +55,6 @@ function SetupStations() {
         style={{
           alignItems: 'flex-start',
           flexDirection: 'row',
-          justifyContent: 'flex-end',
           marginLeft: 20,
           width: 200,
           marginTop: 10,
@@ -69,7 +63,6 @@ function SetupStations() {
         <RoundedButton
           icon={<RemoveIcon color={fancyColors.black} />}
           title="Fjern"
-          color={state.stations[activeIndex].color}
           onPress={async () => {
             await deleteStation(state.userStations[activeIndex].station_id)
 
@@ -87,7 +80,7 @@ function SetupStations() {
           }}
         />
       </View>
-    </>
+    </ListWrapper>
   )
 }
 
@@ -102,7 +95,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginRight: 20,
     borderRadius: 20,
-    minWidth: 200,
+    width: 200,
     alignItems: 'center',
   },
   scrollContainer: { overflow: 'visible', marginTop: 20, marginBottom: 20 },

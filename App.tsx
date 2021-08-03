@@ -108,6 +108,7 @@ function App() {
 
     async function get() {
       setUserDataLoaded(false)
+
       const { status: locationStatus } =
         await Location.requestPermissionsAsync()
 

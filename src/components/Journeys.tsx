@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import { View } from '@motify/components'
 import { view } from '@risingstack/react-easy-state'
-import { JourneyType } from 'src/lib/types'
+import { JourneyType, StationType } from 'src/lib/types'
 import { ListWrapper, Header, RowView } from './styled'
 import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
@@ -95,25 +95,28 @@ function Journeys() {
           <RoundedButton
             title="Åpne"
             icon={<Start />}
-            onPress={() =>
+            onPress={() => {
               Linking.openURL(
-                `oslobysykkel:stations/${state.userJourneys[activeIndex]['fromStation'].station_id}`
+                `oslobysykkel:stations/${journeys?.visible[activeIndex]['fromStation'].station_id}`
               )
-            }
+            }}
           />
 
           <RoundedButton
             title="Åpne"
             icon={<Target />}
             onPress={() => {
-              const stationToOpen = state.userJourneys[activeIndex][
+              const stationToOpen = journeys?.visible[activeIndex][
                 'updatedToStation'
               ]
                 ? 'updatedToStation'
                 : 'toStation'
 
               Linking.openURL(
-                `oslobysykkel:stations/${state.userJourneys[activeIndex][stationToOpen].station_id}`
+                `oslobysykkel:stations/${
+                  (journeys?.visible[activeIndex][stationToOpen] as StationType)
+                    .station_id
+                }`
               )
             }}
           />
