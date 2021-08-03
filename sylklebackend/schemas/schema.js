@@ -51,18 +51,10 @@ export default createSchema({
           type: 'string',
         },
         {
-          name: 'fromStation',
-          type: 'string',
-        },
-        {
           name: 'toStation',
           type: 'string',
         },
         { name: 'icon', type: 'string' },
-        {
-          name: 'fromClosest',
-          type: 'boolean',
-        },
       ],
     },
   ]),

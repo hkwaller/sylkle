@@ -2,6 +2,7 @@ import React from 'react'
 import GymIcon from 'src/icons/GymIcon'
 import HouseIcon from 'src/icons/HouseIcon'
 import WorkIcon from 'src/icons/WorkIcon'
+import { JourneyType, StationType } from './types'
 
 export function getDistanceFromLatLng(
   lat1: number,
@@ -41,4 +42,28 @@ export function iconMapper(name: string): React.VFC<{ color?: string }> {
     default:
       return HouseIcon
   }
+}
+
+export function getNearestStations(
+  station: StationType,
+  stations: StationType[],
+  type: 'from' | 'to'
+) {
+  const sortedStations = stations
+    .map((s: StationType) => {
+      return {
+        ...s,
+        distance: getDistanceFromLatLng(s.lat, s.lon, station.lat, station.lon),
+      }
+    })
+    .sort((a: StationType, b: StationType) =>
+      a.distance > b.distance ? 1 : -1
+    )
+    .filter(
+      (s) =>
+        s[type === 'from' ? 'num_bikes_available' : 'num_docks_available'] > 0
+    )
+    .slice(0, 10)
+
+  return sortedStations
 }

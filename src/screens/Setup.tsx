@@ -1,113 +1,60 @@
 import React, { useState } from 'react'
-import { StyleSheet, SafeAreaView, Dimensions, TextInput } from 'react-native'
+import { StyleSheet, SafeAreaView } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'react-native-gesture-handler'
-import Toast from 'react-native-toast-message'
 import { View } from 'moti'
-import { Header, ListWrapper } from 'src/components/styled'
-import { StationType } from 'src/lib/types'
-import PageHeader from 'src/components/PageHeader'
-import { colors, fancyColors, toastConfig } from 'src/lib/constants'
-import RoundedButton from 'src/components/RoundedButton'
-import Modal from 'src/components/Modal'
-import AddJourneyButton from 'src/components/AddJourneyButton'
-import { addJourney } from 'src/lib/api'
-import AppBackground from 'src/components/AppBackground'
-
-const { width } = Dimensions.get('screen')
+import { Header } from 'src/components/styled'
+import DestinationModal from 'src/components/DestinationModal'
+import { shadow } from 'src/lib/constants'
+import SmallRoundedButton from 'src/components/SmallRoundedButton'
+import SetupStations from './setup/SetupStations'
+import SetupDestinations from './setup/SetupDestinations'
+import StationModal from 'src/components/StationModal'
 
 function Setup() {
-  const [text, setText] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
-  const [fromStation, setFromStation] = useState<StationType | undefined>()
-  const [toStation, setToStation] = useState<StationType | undefined>()
+  const [stationModalVisible, setStationModalVisible] = useState(false)
 
   return (
     <>
-      <AppBackground />
       <SafeAreaView style={styles.container}>
-        <PageHeader />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ marginTop: 20 }}
-        >
-          <ListWrapper style={{ marginTop: 20 }}>
-            <Header style={{ marginLeft: 20, marginBottom: 10 }}>
-              Legg til strekning
-            </Header>
-            <View
-              style={{
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                marginHorizontal: 20,
-                width: width - 40,
-              }}
-            >
-              <AddJourneyButton
-                title={fromStation ? fromStation.name : 'Fra'}
-                onPress={() => setModalVisible(true)}
-              />
-              <AddJourneyButton
-                title={toStation ? toStation.name : 'Til'}
-                onPress={() => setModalVisible(true)}
-              />
-            </View>
-            {fromStation && toStation && (
-              <TextInput
-                style={{
-                  height: 60,
-                  marginLeft: 20,
-                  backgroundColor: 'white',
-                  width: width - 40,
-                  paddingLeft: 20,
-                  marginTop: 20,
-                  fontSize: 18,
-                }}
-                placeholder="Navn på din strekning"
-                onChangeText={(text) => setText(text)}
-                defaultValue={text}
-              />
-            )}
-            {fromStation && toStation && text.length > 0 ? (
-              <View
-                style={{
-                  alignSelf: 'flex-end',
-                  marginTop: 20,
-                  marginRight: 20,
-                }}
-              >
-                <RoundedButton
-                  icon={<View />}
-                  onPress={() => {
-                    addJourney(
-                      fromStation.station_id,
-                      toStation?.station_id,
-                      text
-                    )
-                    setFromStation(undefined)
-                    setToStation(undefined)
-                    setText('')
-                    Toast.show({
-                      text1: `Strekningen ${text} er lagt til`,
-                      ...toastConfig,
-                    })
-                  }}
-                  title="Legg til strekning"
-                  backgroundColor={fancyColors.mint}
-                />
-              </View>
-            ) : null}
-          </ListWrapper>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Header style={{ fontSize: 30, marginTop: 50, marginBottom: 30 }}>
+            Innstillinger
+          </Header>
+          <View style={styles.headerContainer}>
+            <Header style={styles.scrollHeader}>Dine destinasjoner</Header>
+
+            <SmallRoundedButton
+              title="Legg til"
+              onPress={() => setModalVisible(true)}
+            />
+          </View>
+
+          <SetupDestinations />
+
+          <View style={styles.headerContainer}>
+            <Header style={styles.scrollHeader}>Dine stasjoner</Header>
+
+            <SmallRoundedButton
+              title="Legg til"
+              onPress={() => setStationModalVisible(true)}
+            />
+          </View>
+
+          <SetupStations />
         </ScrollView>
       </SafeAreaView>
-      <Modal
+      <DestinationModal
         isVisible={modalVisible}
         onClose={() => {
           setModalVisible(false)
         }}
-        selectStation={(station: StationType) => {
-          if (!fromStation) setFromStation(station)
-          else setToStation(station)
+      />
+      <StationModal
+        isVisible={stationModalVisible}
+        onClose={() => {
+          setStationModalVisible(false)
         }}
       />
     </>
@@ -118,6 +65,22 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 60,
     flex: 1,
+  },
+  button: {
+    ...shadow,
+    padding: 30,
+    backgroundColor: 'white',
+    marginRight: 20,
+    borderRadius: 20,
+  },
+  scrollContainer: { overflow: 'visible', marginTop: 20, marginBottom: 20 },
+  scrollHeader: { fontSize: 20 },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 40,
+    marginRight: 20,
   },
 })
 

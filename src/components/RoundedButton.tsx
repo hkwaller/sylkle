@@ -12,16 +12,16 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from 'react-native-reanimated'
 import { Text } from 'src/components/styled'
 import ArrowIcon from 'src/icons/ArrowIcon'
-import { colors } from 'src/lib/constants'
+import { colors, fancyColors } from 'src/lib/constants'
 
 type Props = {
   title?: string
   color?: string
   icon?: React.ReactNode
-  width?: number
   onPress?: () => void
   backgroundColor?: string
   disabled?: boolean
@@ -31,7 +31,6 @@ function RoundedButton({
   title,
   backgroundColor,
   icon,
-  width,
   onPress,
   disabled = false,
 }: Props) {
@@ -57,6 +56,7 @@ function RoundedButton({
   const style = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(buttonScale.value) }],
+      opacity: withTiming(disabled ? 0.4 : 1),
     }
   })
 
@@ -70,20 +70,19 @@ function RoundedButton({
       <Animated.View style={style}>
         <View
           animate={{
-            borderColor: colors.gray,
+            borderColor: fancyColors.blue,
             backgroundColor: colors.white,
-            width: width || undefined,
           }}
           transition={{ type: 'timing', duration: 400 }}
           style={[
             styles.container,
             {
               backgroundColor: backgroundColor,
-              paddingHorizontal: 20,
+              paddingHorizontal: 12,
             },
           ]}
         >
-          <Text style={{ paddingRight: title ? 16 : 0 }}>{title}</Text>
+          <Text style={{ paddingRight: title ? 8 : 0 }}>{title}</Text>
           {icon || (
             <ArrowIcon color={backgroundColor ? colors.white : undefined} />
           )}
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 50,
     paddingVertical: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',

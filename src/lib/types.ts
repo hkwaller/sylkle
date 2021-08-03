@@ -32,13 +32,13 @@ export type SanityJourney = {
   toStation: string
   name: string
   icon: string
-  fromClosest: boolean
 }
 
 export type JourneyType = {
   _key: string
   fromStation: StationType
   toStation: StationType
+  updatedToStation?: StationType
 } & Omit<SanityJourney, 'fromStation' | 'toStation'>
 
 export type User = {

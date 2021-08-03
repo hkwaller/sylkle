@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   FlatList,
   Linking,
@@ -6,18 +6,44 @@ import {
   NativeSyntheticEvent,
 } from 'react-native'
 import { View } from '@motify/components'
-import { JourneyType } from 'src/lib/types'
+import { view } from '@risingstack/react-easy-state'
+import { JourneyType, StationType } from 'src/lib/types'
 import { ListWrapper, Header, RowView } from './styled'
 import Journey from './Journey'
 import { journeyWidth } from 'src/lib/constants'
 import RoundedButton from './RoundedButton'
-import SwatchIcon from 'src/icons/SwitchIcon'
-import { view } from '@risingstack/react-easy-state'
 import { state } from 'src/lib/state'
+import Start from 'src/icons/Start'
+import Target from 'src/icons/Target'
+import { Text } from 'src/components/styled'
+import AddJourney from './AddJourney'
 
 function Journeys() {
+  const [journeys, setJourneys] = useState<{
+    visible: JourneyType[]
+    hidden: JourneyType[]
+  }>()
+
   const [activeIndex, setActiveIndex] = useState(0)
-  const [flipped, setFlipped] = useState(-1)
+
+  useEffect(() => {
+    const filteredJourneys = state.userJourneys.reduce(
+      (acc, val: JourneyType) => {
+        if (val.fromStation.name === val.toStation.name) {
+          acc.hidden.push(val)
+        } else {
+          acc.visible.push(val)
+        }
+
+        return acc
+      },
+      {
+        visible: [],
+        hidden: [],
+      }
+    )
+    setJourneys(filteredJourneys)
+  }, [state.userJourneys])
 
   function onScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
     const contentOffset = event.nativeEvent.contentOffset
@@ -28,60 +54,76 @@ function Journeys() {
 
   return (
     <ListWrapper>
-      <Header>Strekninger</Header>
+      <View style={{ flexDirection: 'row' }}>
+        <Header>Destinasjoner</Header>
+        <Text style={{ marginLeft: 6 }}>
+          {(journeys?.hidden?.length || 0) > 0 &&
+            `(${journeys?.hidden[0].name} gjemt)`}
+        </Text>
+      </View>
       <FlatList
-        keyExtractor={(item: JourneyType) =>
-          `${item.fromStation.station_id}${item.toStation.station_id}`
+        keyExtractor={(item: JourneyType, index) =>
+          `${item.fromStation.station_id}${item.toStation.station_id}${index}`
         }
-        data={state.userJourneys}
+        data={journeys?.visible}
         horizontal
         pagingEnabled
         onScroll={onScroll}
         snapToInterval={330}
         decelerationRate="fast"
+        ListEmptyComponent={<AddJourney />}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {
           return (
             <>
               <View style={{ paddingLeft: 20 }} />
-              <Journey
-                journey={item}
-                index={index}
-                isFlipped={index === flipped}
-              />
+              <Journey journey={item} index={index} />
             </>
           )
         }}
       />
-      <RowView
-        style={{
-          width: journeyWidth + 20,
-          justifyContent: 'space-between',
-          paddingTop: 6,
-          paddingLeft: 20,
-        }}
-      >
-        <RoundedButton
-          onPress={() => setFlipped(activeIndex === flipped ? -1 : activeIndex)}
-          icon={<SwatchIcon />}
-          color={state.userJourneys[activeIndex].color}
-        />
-        <RoundedButton
-          title="Åpne"
-          color={state.userJourneys[activeIndex].color}
-          onPress={() =>
-            Linking.openURL(
-              `oslobysykkel:stations/${
-                state.userJourneys[activeIndex][
-                  flipped === activeIndex ? 'toStation' : 'fromStation'
-                ].station_id
-              }`
-            )
-          }
-        />
-      </RowView>
+      {(journeys?.visible.length || 0) > 0 && (
+        <RowView
+          style={{
+            width: journeyWidth + 20,
+            justifyContent: 'space-between',
+            paddingTop: 6,
+            paddingLeft: 20,
+          }}
+        >
+          <RoundedButton
+            title="Åpne"
+            icon={<Start />}
+            onPress={() => {
+              Linking.openURL(
+                `oslobysykkel:stations/${journeys?.visible[activeIndex]['fromStation'].station_id}`
+              )
+            }}
+          />
+
+          <RoundedButton
+            title="Åpne"
+            icon={<Target />}
+            onPress={() => {
+              const stationToOpen = journeys?.visible[activeIndex][
+                'updatedToStation'
+              ]
+                ? 'updatedToStation'
+                : 'toStation'
+
+              Linking.openURL(
+                `oslobysykkel:stations/${
+                  (journeys?.visible[activeIndex][stationToOpen] as StationType)
+                    .station_id
+                }`
+              )
+            }}
+          />
+        </RowView>
+      )}
     </ListWrapper>
   )
 }
+
 export default view(Journeys)
