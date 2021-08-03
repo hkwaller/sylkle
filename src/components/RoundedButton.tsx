@@ -16,7 +16,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Text } from 'src/components/styled'
 import ArrowIcon from 'src/icons/ArrowIcon'
-import { colors } from 'src/lib/constants'
+import { colors, fancyColors } from 'src/lib/constants'
 
 type Props = {
   title?: string
@@ -70,7 +70,7 @@ function RoundedButton({
       <Animated.View style={style}>
         <View
           animate={{
-            borderColor: colors.gray,
+            borderColor: fancyColors.blue,
             backgroundColor: colors.white,
           }}
           transition={{ type: 'timing', duration: 400 }}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 50,
     paddingVertical: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',

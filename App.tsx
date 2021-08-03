@@ -23,6 +23,7 @@ import TabBarSettings from 'src/icons/TabBarSettings'
 import TabBarAll from 'src/icons/TabBarAll'
 import Loading from 'src/components/Loading'
 import JourneyDetails from 'src/screens/JourneyDetails'
+import LogoBike from 'src/icons/LogoBike'
 
 const { height } = Dimensions.get('screen')
 
@@ -62,6 +63,8 @@ const Tab = createBottomTabNavigator()
 
 function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false)
+  const [userDataLoaded, setUserDataLoaded] = useState(false)
+
   const appState = useRef(AppState.currentState)
 
   useEffect(() => {
@@ -104,13 +107,16 @@ function App() {
     loadFonts()
 
     async function get() {
+      setUserDataLoaded(false)
       const { status: locationStatus } =
         await Location.requestPermissionsAsync()
+
       if (locationStatus !== 'granted') {
-        return
+        return await Location.requestPermissionsAsync()
       }
 
       const location = await Location.getCurrentPositionAsync({})
+
       state.location = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -118,6 +124,8 @@ function App() {
 
       const updatedState = await getStations(state.location)
       updateState(updatedState)
+
+      setUserDataLoaded(true)
     }
 
     get()
@@ -129,7 +137,7 @@ function App() {
     state.userStations = newState.userStations
   }
 
-  if (!fontsLoaded || state.stations.length === 0) {
+  if (!fontsLoaded || !userDataLoaded) {
     return (
       <SafeAreaView
         style={{
@@ -160,7 +168,7 @@ function App() {
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color }) => {
               if (route.name === 'Home') {
-                return <TabBarHouse color={color} />
+                return <LogoBike color={color} />
               } else if (route.name === 'Setup') {
                 return <TabBarSettings color={color} />
               } else if (route.name === 'All') {

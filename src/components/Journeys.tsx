@@ -16,6 +16,7 @@ import { state } from 'src/lib/state'
 import Start from 'src/icons/Start'
 import Target from 'src/icons/Target'
 import { Text } from 'src/components/styled'
+import AddJourney from './AddJourney'
 
 function Journeys() {
   const [journeys, setJourneys] = useState<{
@@ -70,7 +71,7 @@ function Journeys() {
         onScroll={onScroll}
         snapToInterval={330}
         decelerationRate="fast"
-        ListEmptyComponent={<Text>Legg til strekninger</Text>}
+        ListEmptyComponent={<AddJourney />}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }) => {

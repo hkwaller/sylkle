@@ -1,15 +1,28 @@
-import { View } from '@motify/components'
 import React from 'react'
-import { Text } from './styled'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { view } from '@risingstack/react-easy-state'
+import { fancyColors, shadow } from 'src/lib/constants'
+import { Text } from 'src//components/styled'
 
-type Props = {}
-
-function AddJourney(props: Props) {
+function AddJourney() {
   return (
-    <View>
-      <Text>AddJourney</Text>
-    </View>
+    <TouchableOpacity
+      style={{
+        margin: 10,
+        marginLeft: 20,
+        backgroundColor: 'white',
+        padding: 25,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        ...shadow,
+      }}
+    >
+      <Text medium big style={{ color: fancyColors.blue }}>
+        Legg til destinasjon
+      </Text>
+    </TouchableOpacity>
   )
 }
 
-export default AddJourney
+export default view(AddJourney)

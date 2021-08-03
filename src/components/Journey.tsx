@@ -28,7 +28,7 @@ function Journey({ journey, index }: Props) {
 
   return (
     <View
-      from={{ translateX: -100 * (index + 1) }}
+      from={{ translateX: 100 * (index + 1) }}
       animate={{ translateX: 0 }}
       style={{
         width: journeyWidth,

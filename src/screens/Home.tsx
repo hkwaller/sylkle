@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { RefreshControl, StyleSheet, Image } from 'react-native'
+import { RefreshControl, StyleSheet } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'moti'
 import Spacer from 'src/components/Spacer'
@@ -8,6 +8,8 @@ import Journeys from 'src/components/Journeys'
 import NearbyStations from 'src/components/NearbyStations'
 import Stations from 'src/components/Stations'
 import { getStations } from 'src/lib/api'
+import LogoBike from 'src/icons/LogoBike'
+import { fancyColors } from 'src/lib/constants'
 
 function App() {
   const [refreshing, setRefreshing] = useState(false)
@@ -35,14 +37,8 @@ function App() {
         paddingBottom: 200,
       }}
     >
-      <Image
-        source={require('../../assets/bicycle.png')}
-        style={{ marginLeft: 20, width: 50, height: 30 }}
-        height={30}
-        width={50}
-        resizeMode="contain"
-      />
-      <Spacer spacing={20} />
+      <LogoBike color={fancyColors.blue} hideBorder />
+      <Spacer spacing={10} />
       {state.userJourneys.length > 0 && <Journeys />}
       {state.userStations.length > 0 && <Stations />}
       {state.stations.length > 0 && <NearbyStations />}

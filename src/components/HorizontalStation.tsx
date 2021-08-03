@@ -12,12 +12,24 @@ type Props = {
   station: StationType
   index: number
   isUserStation?: boolean
+  selected?: boolean
 }
 
-function HorizontalStation({ station, isUserStation = false }: Props) {
+function HorizontalStation({
+  station,
+  isUserStation = false,
+  selected = false,
+}: Props) {
   return (
     <View
-      style={[styles.container, { ...shadow }]}
+      style={[
+        styles.container,
+        {
+          ...shadow,
+          borderWidth: 2,
+          borderColor: selected ? fancyColors.blue : 'white',
+        },
+      ]}
       from={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

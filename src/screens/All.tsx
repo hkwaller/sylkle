@@ -1,23 +1,46 @@
-import React, { useState } from 'react'
-import { Dimensions, FlatList, Linking, RefreshControl } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import {
+  Dimensions,
+  FlatList,
+  Linking,
+  Pressable,
+  RefreshControl,
+  View,
+} from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+
 import HorizontalStation from 'src/components/HorizontalStation'
-import { Header, ListWrapper } from 'src/components/styled'
+import { Header, ListWrapper, Text } from 'src/components/styled'
 import { state } from 'src/lib/state'
 import { StationType } from 'src/lib/types'
 import { getStations } from 'src/lib/api'
 
 function All() {
   const [refreshing, setRefreshing] = useState(false)
+  const [stations, setStations] = useState<StationType[]>(state.stations)
+  const [showOnlyAvailable, setShowOnlyAvailable] = useState(false)
+
+  useEffect(() => {
+    if (showOnlyAvailable) {
+      const filteredStations = state.stations.filter(
+        (station: StationType) => station.num_bikes_available > 0
+      )
+      setStations(filteredStations)
+    } else {
+      setStations(state.stations)
+    }
+  }, [showOnlyAvailable])
 
   return (
     <ListWrapper style={{ paddingTop: 60 }}>
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
-        data={state.stations}
+        data={stations}
         ListHeaderComponent={
-          <Header style={{ marginTop: 40 }}>Nærmeste stasjoner</Header>
+          <Header style={{ fontSize: 30, marginTop: 50, marginBottom: 30 }}>
+            Nærmeste stasjoner
+          </Header>
         }
         refreshControl={
           <RefreshControl
@@ -26,7 +49,7 @@ function All() {
               setRefreshing(true)
               const updatedState: any = await getStations(state.location)
 
-              state.stations = updatedState.stations
+              setStations(updatedState.stations)
 
               setRefreshing(false)
             }}

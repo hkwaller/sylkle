@@ -29,7 +29,7 @@ function Station({
 
   return (
     <View
-      from={{ translateX: -100 * (index + 1) }}
+      from={{ translateX: 100 * (index + 1) }}
       animate={{ translateX: 0 }}
       style={{ paddingVertical: 10, width: stationSize }}
     >
