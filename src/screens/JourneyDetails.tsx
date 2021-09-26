@@ -26,7 +26,12 @@ function JourneyDetails(props: Props) {
 
   useEffect(() => {
     setFromStations(
-      getNearestStations(journey.fromStation, state.stations, 'from')
+      getNearestStations(
+        journey.fromStation,
+        state.stations,
+        'from',
+        state.location
+      )
     )
     setToStations(getNearestStations(journey.toStation, state.stations, 'to'))
   }, [])
