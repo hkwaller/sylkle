@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { RefreshControl, StyleSheet } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { ScrollView } from 'moti'
+import * as Location from 'expo-location'
 import Spacer from 'src/components/Spacer'
 import { state } from 'src/lib/state'
 import Journeys from 'src/components/Journeys'
@@ -23,6 +24,13 @@ function App() {
           refreshing={refreshing}
           onRefresh={async () => {
             setRefreshing(true)
+            const location = await Location.getCurrentPositionAsync({})
+
+            state.location = {
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            }
+
             const updatedState: any = await getStations(state.location)
 
             state.stations = updatedState.stations
