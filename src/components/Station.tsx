@@ -31,6 +31,7 @@ function Station({
     <View
       from={{ translateX: 100 * (index + 1) }}
       animate={{ translateX: 0 }}
+      delay={index * 200}
       style={{ paddingVertical: 10, width: stationSize }}
     >
       <View

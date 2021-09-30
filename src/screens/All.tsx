@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import {
-  Dimensions,
-  FlatList,
-  Linking,
-  Pressable,
-  RefreshControl,
-  View,
-} from 'react-native'
+import { Dimensions, FlatList, Linking, RefreshControl } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import * as Location from 'expo-location'
 
 import HorizontalStation from 'src/components/HorizontalStation'
-import { Header, ListWrapper, Text } from 'src/components/styled'
+import { Header, ListWrapper } from 'src/components/styled'
 import { state } from 'src/lib/state'
 import { StationType } from 'src/lib/types'
-import { getStations } from 'src/lib/api'
 
 function All() {
   const [refreshing, setRefreshing] = useState(false)
@@ -47,10 +40,9 @@ function All() {
             refreshing={refreshing}
             onRefresh={async () => {
               setRefreshing(true)
-              const updatedState: any = await getStations(state.location)
-
-              setStations(updatedState.stations)
-
+              state.location = await Location.getCurrentPositionAsync({
+                accuracy: Location.Accuracy.Balanced,
+              })
               setRefreshing(false)
             }}
           />

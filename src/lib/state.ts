@@ -1,23 +1,28 @@
 import { store } from '@risingstack/react-easy-state'
-import { LocationCoords, Station, UserJourney, UserStation } from './types'
+import { Station, UserJourney, UserStation } from './types'
+import * as Location from 'expo-location'
 
 export type State = {
-  userId: string
   stations: Station[]
   userStations: UserStation[]
   userJourneys: UserJourney[]
-  location: LocationCoords
+  location: any
   loaded: boolean
+  storedStations: any[]
+  storedJourneys: any[]
 }
 
 export const state = store<State>({
-  userId: '',
+  loaded: false,
   stations: [],
   userStations: [],
   userJourneys: [],
+  storedStations: [],
+  storedJourneys: [],
   location: {
-    latitude: 60.0,
-    longitude: 10.0,
+    coords: {
+      latitude: 60.0,
+      longitude: 10.0,
+    },
   },
-  loaded: false,
 })

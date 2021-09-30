@@ -30,7 +30,9 @@ function SetupJourneys() {
   return (
     <ListWrapper>
       <FlatList
-        keyExtractor={(item: JourneyType) => `${item._key}`}
+        keyExtractor={(item: JourneyType) =>
+          `${item.fromStation.station_id}${item.toStation.station_id}`
+        }
         data={state.userJourneys}
         horizontal
         pagingEnabled
@@ -66,15 +68,12 @@ function SetupJourneys() {
           icon={<RemoveIcon color={fancyColors.black} />}
           title="Fjern"
           onPress={async () => {
-            await deleteJourney(state.userJourneys[activeIndex]._key)
+            const journeyToRemove = state.userJourneys[activeIndex]
 
-            state.userJourneys = state.userJourneys.filter(
-              (j: JourneyType) =>
-                j._key !== state.userJourneys[activeIndex]._key
-            )
+            await deleteJourney(state.userJourneys[activeIndex].toStation)
 
             Toast.show({
-              text1: `${state.userStations[activeIndex].name} er tatt bort`,
+              text1: `${journeyToRemove.name} er tatt bort`,
               ...toastConfig,
             })
 

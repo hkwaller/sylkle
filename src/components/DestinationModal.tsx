@@ -112,6 +112,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
               <TextInput
                 style={[styles.input, { marginBottom: 20 }]}
                 placeholder="Skriv navn. Eg. Jobb, Hjemme"
+                placeholderTextColor="#DADADA"
                 onChangeText={(text) => setName(text)}
                 defaultValue={name}
               />
@@ -126,6 +127,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
               <TextInput
                 style={styles.input}
                 placeholder="Filtrer på stasjoner"
+                placeholderTextColor="#DADADA"
                 onChangeText={(text) => setText(text)}
                 defaultValue={text}
               />
@@ -170,12 +172,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
           onPress={async () => {
             if (!selectedStation) return
 
-            const updatedState: any = await addJourney(
-              selectedStation.station_id,
-              name
-            )
-
-            state.userJourneys = updatedState
+            await addJourney(selectedStation.station_id, name)
 
             Toast.show({
               text1: `Strekningen ${name} er lagt til`,
@@ -219,6 +216,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 8,
     borderColor: fancyColors.lightBlue,
+    color: colors.black,
   },
 })
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useState } from 'react'
 import {
   FlatList,
   NativeScrollEvent,
@@ -9,11 +9,12 @@ import { view } from '@risingstack/react-easy-state'
 import { View } from '@motify/components'
 import Toast from 'react-native-toast-message'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import DraggableFlatList from 'react-native-draggable-flatlist'
 import { StationType } from 'src/lib/types'
 import { fancyColors, shadow, toastConfig } from 'src/lib/constants'
 import { state } from 'src/lib/state'
 import RemoveIcon from 'src/icons/RemoveIcon'
-import { deleteStation } from 'src/lib/api'
+import { deleteStation, getStations } from 'src/lib/api'
 import RoundedButton from 'src/components/RoundedButton'
 import { ListWrapper, Text } from 'src/components/styled'
 
@@ -27,8 +28,34 @@ function SetupStations() {
     if (index !== activeIndex) setActiveIndex(Math.max(index, 0))
   }
 
+  const renderItem = useCallback(({ item, index, drag, isActive }: any) => {
+    return (
+      <TouchableOpacity
+        style={{
+          height: 100,
+          backgroundColor: isActive ? 'red' : item.backgroundColor,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        onLongPress={drag}
+      >
+        {index === 0 && <View style={{ paddingHorizontal: 10 }} />}
+        <View style={styles.button}>
+          <Text>{item.name}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }, [])
+
   return (
     <ListWrapper>
+      {/* <DraggableFlatList
+        horizontal
+        data={state.userStations}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `draggable-item-${item.key}`}
+        onDragEnd={({ data }) => (state.userStations = data)}
+      /> */}
       <FlatList
         keyExtractor={(item: StationType) => item.station_id}
         data={state.userStations}
@@ -66,17 +93,14 @@ function SetupStations() {
           onPress={async () => {
             await deleteStation(state.userStations[activeIndex].station_id)
 
-            state.userStations = state.userStations.filter(
-              (s: StationType) =>
-                s.station_id !== state.userStations[activeIndex].station_id
-            )
-
             Toast.show({
               text1: `${state.userStations[activeIndex].name} er tatt bort`,
               ...toastConfig,
             })
 
             setActiveIndex(Math.max(0, activeIndex - 1))
+
+            await getStations()
           }}
         />
       </View>

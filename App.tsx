@@ -18,12 +18,12 @@ import HomeScreen from 'src/screens/Home'
 import SetupScreen from 'src/screens/Setup'
 import AllScreen from 'src/screens/All'
 import { colors, fancyColors } from 'src/lib/constants'
-import TabBarHouse from 'src/icons/TabBarHouse'
 import TabBarSettings from 'src/icons/TabBarSettings'
 import TabBarAll from 'src/icons/TabBarAll'
 import Loading from 'src/components/Loading'
 import JourneyDetails from 'src/screens/JourneyDetails'
 import LogoBike from 'src/icons/LogoBike'
+import { getValueFor, save } from 'src/lib/helpers'
 
 const { height } = Dimensions.get('screen')
 
@@ -63,13 +63,21 @@ const Tab = createBottomTabNavigator()
 
 function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false)
-  const [userDataLoaded, setUserDataLoaded] = useState(false)
 
   const appState = useRef(AppState.currentState)
 
   useEffect(() => {
-    AppState.addEventListener('change', _handleAppStateChange)
+    async function get() {
+      const { status: locationStatus } =
+        await Location.requestPermissionsAsync()
 
+      if (locationStatus !== 'granted') {
+        return await Location.requestPermissionsAsync()
+      }
+    }
+
+    AppState.addEventListener('change', _handleAppStateChange)
+    get()
     return () => {
       AppState.removeEventListener('change', _handleAppStateChange)
     }
@@ -87,8 +95,7 @@ function App() {
         longitude: location.coords.longitude,
       }
 
-      const updatedState = await getStations(state.location)
-      updateState(updatedState)
+      await getStations()
     }
 
     appState.current = nextAppState
@@ -107,38 +114,19 @@ function App() {
     loadFonts()
 
     async function get() {
-      setUserDataLoaded(false)
+      const storedStations = await getValueFor('storedUserStations')
+      state.storedStations = storedStations ? JSON.parse(storedStations!) : []
 
-      const { status: locationStatus } =
-        await Location.requestPermissionsAsync()
+      const storedJourneys = await getValueFor('storedUserJourneys')
+      state.storedJourneys = storedJourneys ? JSON.parse(storedJourneys!) : []
 
-      if (locationStatus !== 'granted') {
-        return await Location.requestPermissionsAsync()
-      }
-
-      const location = await Location.getCurrentPositionAsync({})
-
-      state.location = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      }
-
-      const updatedState = await getStations(state.location)
-      updateState(updatedState)
-
-      setUserDataLoaded(true)
+      await getStations()
     }
 
     get()
   }, [])
 
-  function updateState(newState: any) {
-    state.stations = newState.stations
-    state.userJourneys = newState.userJourneys
-    state.userStations = newState.userStations
-  }
-
-  if (!fontsLoaded || !userDataLoaded) {
+  if (!fontsLoaded || !state.loaded) {
     return (
       <SafeAreaView
         style={{

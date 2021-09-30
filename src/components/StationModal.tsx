@@ -111,6 +111,7 @@ function StationModal({ isVisible, onClose }: Props) {
                 style={styles.input}
                 placeholder="Filtrer på stasjoner"
                 onChangeText={(text) => setText(text)}
+                placeholderTextColor={colors.gray}
                 defaultValue={text}
               />
             </>
@@ -152,9 +153,7 @@ function StationModal({ isVisible, onClose }: Props) {
           onPress={async () => {
             if (!selectedStation) return
 
-            const updatedStations: any = await addStation(selectedStation)
-
-            state.userStations = updatedStations
+            await addStation(selectedStation)
 
             Toast.show({
               text1: `${selectedStation.name} er lagt til`,

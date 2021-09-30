@@ -14,7 +14,6 @@ import Start from 'src/icons/Start'
 import ArrowDown from 'src/icons/ArrowDown'
 import Target from 'src/icons/Target'
 import { deleteJourney, getStations } from 'src/lib/api'
-import { state } from 'src/lib/state'
 import ArrowIcon from 'src/icons/ArrowIcon'
 
 type Props = {
@@ -30,6 +29,7 @@ function Journey({ journey, index }: Props) {
     <View
       from={{ translateX: 100 * (index + 1) }}
       animate={{ translateX: 0 }}
+      delay={index * 100}
       style={{
         width: journeyWidth,
         margin: 10,
@@ -45,17 +45,13 @@ function Journey({ journey, index }: Props) {
           navigation.navigate('Details', { journey })
         }}
         onLongPress={async () => {
-          await deleteJourney(journey._key)
+          await deleteJourney(journey.toStation.station_id)
           Toast.show({
             text1: `Strekningen ${journey.name} er tatt bort`,
             ...toastConfig,
           })
 
-          const updatedState: any = await getStations(state.location)
-
-          state.stations = updatedState.stations
-          state.userJourneys = updatedState.userJourneys
-          state.userStations = updatedState.userStations
+          await getStations()
         }}
       >
         <View style={{ position: 'absolute', top: 5, right: 5 }}>
