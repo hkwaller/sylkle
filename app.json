@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "sylkle",
+    "name": "sykle.",
     "slug": "sylkle",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,17 +13,20 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "no.krawaller.sylkle",
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.5"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "no.krawaller.sylkle"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import { Dimensions, View } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
+import React, { useEffect, useRef, useState } from 'react'
+import { AppState, Dimensions, View } from 'react-native'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'
 import * as Font from 'expo-font'
@@ -9,17 +9,21 @@ import { SafeAreaView } from '@motify/components'
 import Toast from 'react-native-toast-message'
 import { StatusBar } from 'expo-status-bar'
 import 'react-native-gesture-handler'
+import { createStackNavigator } from '@react-navigation/stack'
+
 import { getStations } from 'src/lib/api'
 import { state } from 'src/lib/state'
 import { Text } from 'src/components/styled'
-
 import HomeScreen from 'src/screens/Home'
 import SetupScreen from 'src/screens/Setup'
 import AllScreen from 'src/screens/All'
 import { colors, fancyColors } from 'src/lib/constants'
-import TabBarHouse from 'src/icons/TabBarHouse'
 import TabBarSettings from 'src/icons/TabBarSettings'
 import TabBarAll from 'src/icons/TabBarAll'
+import Loading from 'src/components/Loading'
+import JourneyDetails from 'src/screens/JourneyDetails'
+import LogoBike from 'src/icons/LogoBike'
+import { getValueFor, save } from 'src/lib/helpers'
 
 const { height } = Dimensions.get('screen')
 
@@ -40,15 +44,67 @@ const toastConfig = {
   ),
 }
 
+const JourneyStack = createStackNavigator()
+
+function JourneyStackScreen() {
+  return (
+    <JourneyStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <JourneyStack.Screen name="Home" component={HomeScreen} />
+      <JourneyStack.Screen name="Details" component={JourneyDetails} />
+    </JourneyStack.Navigator>
+  )
+}
+
 const Tab = createBottomTabNavigator()
 
 function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false)
 
+  const appState = useRef(AppState.currentState)
+
+  useEffect(() => {
+    async function get() {
+      const { status: locationStatus } =
+        await Location.requestPermissionsAsync()
+
+      if (locationStatus !== 'granted') {
+        return await Location.requestPermissionsAsync()
+      }
+    }
+
+    AppState.addEventListener('change', _handleAppStateChange)
+    get()
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange)
+    }
+  }, [])
+
+  const _handleAppStateChange = async (nextAppState: any) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      const location = await Location.getCurrentPositionAsync({})
+
+      state.location = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      }
+
+      await getStations()
+    }
+
+    appState.current = nextAppState
+  }
+
   useEffect(() => {
     async function loadFonts() {
       await Font.loadAsync({
-        Sansation: require('./assets/fonts/Sansation_Regular.ttf'),
+        SansationRegular: require('./assets/fonts/Sansation_Regular.ttf'),
         SansationBold: require('./assets/fonts/Sansation_Bold.ttf'),
       })
 
@@ -58,33 +114,19 @@ function App() {
     loadFonts()
 
     async function get() {
-      const { status: locationStatus } =
-        await Location.requestPermissionsAsync()
-      if (locationStatus !== 'granted') {
-        return
-      }
+      const storedStations = await getValueFor('storedUserStations')
+      state.storedStations = storedStations ? JSON.parse(storedStations!) : []
 
-      const location = await Location.getCurrentPositionAsync({})
-      state.location = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      }
+      const storedJourneys = await getValueFor('storedUserJourneys')
+      state.storedJourneys = storedJourneys ? JSON.parse(storedJourneys!) : []
 
-      const updatedState = await getStations(state.location)
-      console.log(
-        '🚀 ~ file: App.tsx ~ line 74 ~ get ~ updatedState',
-        updatedState
-      )
-
-      state.stations = updatedState.stations
-      state.userJourneys = updatedState.userJourneys
-      state.userStations = updatedState.userStations
+      await getStations()
     }
 
     get()
   }, [])
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || !state.loaded) {
     return (
       <SafeAreaView
         style={{
@@ -93,20 +135,29 @@ function App() {
           height: height,
         }}
       >
-        <Text>Loading...</Text>
+        <Loading />
       </SafeAreaView>
     )
   }
 
   return (
     <>
-      <StatusBar style="auto" />
-      <NavigationContainer>
+      <StatusBar style="dark" />
+      <NavigationContainer
+        theme={{
+          ...DefaultTheme,
+          colors: {
+            ...DefaultTheme.colors,
+            background: 'white',
+          },
+        }}
+      >
         <Tab.Navigator
+          initialRouteName="Home"
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color }) => {
               if (route.name === 'Home') {
-                return <TabBarHouse color={color} />
+                return <LogoBike color={color} />
               } else if (route.name === 'Setup') {
                 return <TabBarSettings color={color} />
               } else if (route.name === 'All') {
@@ -118,10 +169,13 @@ function App() {
             activeTintColor: fancyColors.blue,
             inactiveTintColor: colors.black,
             showLabel: false,
+            style: {
+              marginBottom: 10,
+            },
           }}
         >
-          <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="All" component={AllScreen} />
+          <Tab.Screen name="Home" component={JourneyStackScreen} />
           <Tab.Screen name="Setup" component={SetupScreen} />
         </Tab.Navigator>
         <Toast ref={(ref) => Toast.setRef(ref)} config={toastConfig} />
