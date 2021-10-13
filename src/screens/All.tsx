@@ -3,7 +3,6 @@ import { Dimensions, FlatList, Linking, RefreshControl } from 'react-native'
 import { view } from '@risingstack/react-easy-state'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import * as Location from 'expo-location'
-
 import HorizontalStation from 'src/components/HorizontalStation'
 import { Header, ListWrapper } from 'src/components/styled'
 import { state } from 'src/lib/state'

@@ -65,6 +65,13 @@ function SetupStations() {
         onScroll={onScroll}
         snapToInterval={220}
         decelerationRate="fast"
+        ListEmptyComponent={
+          <View style={{ flex: 1, width: '80%', padding: 16 }}>
+            <Text style={{ flexWrap: 'wrap', flex: 1, width: '80%' }}>
+              Du har ingen stasjoner enda. Bruk knappen oppe til høyre
+            </Text>
+          </View>
+        }
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item, index }: { item: StationType; index: number }) => {
@@ -78,32 +85,35 @@ function SetupStations() {
           )
         }}
       />
-      <View
-        style={{
-          alignItems: 'flex-start',
-          flexDirection: 'row',
-          marginLeft: 20,
-          width: 200,
-          marginTop: 10,
-        }}
-      >
-        <RoundedButton
-          icon={<RemoveIcon color={fancyColors.black} />}
-          title="Fjern"
-          onPress={async () => {
-            await deleteStation(state.userStations[activeIndex].station_id)
-
-            Toast.show({
-              text1: `${state.userStations[activeIndex].name} er tatt bort`,
-              ...toastConfig,
-            })
-
-            setActiveIndex(Math.max(0, activeIndex - 1))
-
-            await getStations()
+      {state.userStations.length > 0 ? (
+        <View
+          style={{
+            alignItems: 'flex-start',
+            flexDirection: 'row',
+            marginLeft: 20,
+            width: 200,
+            marginTop: 10,
           }}
-        />
-      </View>
+        >
+          <RoundedButton
+            icon={<RemoveIcon color={fancyColors.black} />}
+            title="Fjern"
+            onPress={async () => {
+              const stationToDelete = state.userStations[activeIndex]
+              await deleteStation(stationToDelete.station_id)
+
+              Toast.show({
+                text1: `${stationToDelete.name} er tatt bort`,
+                ...toastConfig,
+              })
+
+              setActiveIndex(Math.max(0, activeIndex - 1))
+
+              await getStations()
+            }}
+          />
+        </View>
+      ) : null}
     </ListWrapper>
   )
 }

@@ -20,7 +20,7 @@ import Spacer from './Spacer'
 import { StationType } from 'src/lib/types'
 import HorizontalStation from './HorizontalStation'
 import { colors, fancyColors, shadow, toastConfig } from 'src/lib/constants'
-import { addJourney } from 'src/lib/api'
+import { addJourney, getStations } from 'src/lib/api'
 import Toast from 'react-native-toast-message'
 
 type Props = {
@@ -112,7 +112,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
               <TextInput
                 style={[styles.input, { marginBottom: 20 }]}
                 placeholder="Skriv navn. Eg. Jobb, Hjemme"
-                placeholderTextColor="#DADADA"
+                placeholderTextColor="#716F81"
                 onChangeText={(text) => setName(text)}
                 defaultValue={name}
               />
@@ -127,7 +127,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
               <TextInput
                 style={styles.input}
                 placeholder="Filtrer på stasjoner"
-                placeholderTextColor="#DADADA"
+                placeholderTextColor="#716F81"
                 onChangeText={(text) => setText(text)}
                 defaultValue={text}
               />
@@ -168,11 +168,13 @@ function DestinationModal({ isVisible, onClose }: Props) {
         </Pressable>
       </ListWrapper>
       <AnimatedSafeArea style={[styles.container, animatedStyle]}>
-        <TouchableOpacity
+        <Pressable
+          hitSlop={100}
           onPress={async () => {
             if (!selectedStation) return
 
             await addJourney(selectedStation.station_id, name)
+            await getStations()
 
             Toast.show({
               text1: `Strekningen ${name} er lagt til`,
@@ -190,7 +192,7 @@ function DestinationModal({ isVisible, onClose }: Props) {
           <Text big medium>
             Legg til
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </AnimatedSafeArea>
     </ModalView>
   )

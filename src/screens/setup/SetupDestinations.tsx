@@ -40,7 +40,13 @@ function SetupJourneys() {
         onScroll={onScroll}
         snapToInterval={220}
         decelerationRate="fast"
-        ListEmptyComponent={<Text>Legg til strekninger</Text>}
+        ListEmptyComponent={
+          <View style={{ flex: 1, width: '80%', padding: 16 }}>
+            <Text style={{ flexWrap: 'wrap', flex: 1, width: '80%' }}>
+              Du har ingen destinasjoner enda. Bruk knappen oppe til høyre
+            </Text>
+          </View>
+        }
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingRight: 200 }}
         renderItem={({ item }) => {
@@ -55,32 +61,42 @@ function SetupJourneys() {
           )
         }}
       />
-      <View
-        style={{
-          alignItems: 'flex-start',
-          flexDirection: 'row',
-          marginLeft: 20,
-          width: 200,
-          marginTop: 10,
-        }}
-      >
-        <RoundedButton
-          icon={<RemoveIcon color={fancyColors.black} />}
-          title="Fjern"
-          onPress={async () => {
-            const journeyToRemove = state.userJourneys[activeIndex]
-
-            await deleteJourney(state.userJourneys[activeIndex].toStation)
-
-            Toast.show({
-              text1: `${journeyToRemove.name} er tatt bort`,
-              ...toastConfig,
-            })
-
-            setActiveIndex(Math.max(0, activeIndex - 1))
+      {state.userJourneys.length > 0 ? (
+        <View
+          style={{
+            alignItems: 'flex-start',
+            flexDirection: 'row',
+            marginLeft: 20,
+            width: 200,
+            marginTop: 10,
           }}
-        />
-      </View>
+        >
+          <RoundedButton
+            icon={<RemoveIcon color={fancyColors.black} />}
+            title="Fjern"
+            onPress={async () => {
+              const journeyToRemove = state.userJourneys[activeIndex]
+              const storedJourneyToRemove = state.storedJourneys.find(
+                (journey) =>
+                  journey.toStation === journeyToRemove.toStation.station_id
+              )
+              console.log(
+                '🚀 ~ file: SetupDestinations.tsx ~ line 83 ~ onPress={ ~ storedJourneyToRemove',
+                storedJourneyToRemove
+              )
+
+              await deleteJourney(storedJourneyToRemove.toStation)
+
+              Toast.show({
+                text1: `${journeyToRemove.name} er tatt bort`,
+                ...toastConfig,
+              })
+
+              setActiveIndex(Math.max(0, activeIndex - 1))
+            }}
+          />
+        </View>
+      ) : null}
     </ListWrapper>
   )
 }

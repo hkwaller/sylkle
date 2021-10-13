@@ -15,6 +15,12 @@ export async function getStations() {
     headers: headers,
   }).then((d) => d.json())
 
+  const userJourneyData = await getValueFor('storedUserJourneys')
+  const storedUserJourneys = JSON.parse(userJourneyData || '[]')
+
+  const userStationData = await getValueFor('storedUserStations')
+  const storedUserStations = JSON.parse(userStationData || '[]')
+
   const statusResult = await getStatus()
   const location = await Location.getCurrentPositionAsync({
     accuracy: Location.Accuracy.Balanced,
@@ -39,7 +45,7 @@ export async function getStations() {
     })
     .sort((a: StationType, b: StationType) => a.distance > b.distance)
 
-  const userStations = state.storedStations
+  const userStations = storedUserStations
     .map((userStation: any) => {
       const matchedStation = parsedStations.find(
         (station: StationType) => station.station_id === userStation.id
@@ -54,7 +60,7 @@ export async function getStations() {
       a.distance > b.distance ? 1 : -1
     )
 
-  const userJourneys = state.storedJourneys.map((userJourney: any) => {
+  const userJourneys = storedUserJourneys.map((userJourney: any) => {
     const fromStation = parsedStations.filter(
       (station: StationType) => station.num_bikes_available > 0
     )[0]
@@ -138,22 +144,20 @@ export async function addJourney(toStation: string, name: string) {
 }
 
 export async function deleteStation(stationId: string) {
-  const indexToRemove = state.storedStations.findIndex(
-    (s: StationType) => s.id === stationId
+  const newStationList = state.storedStations.filter(
+    (s: StationType) => s.id !== stationId
   )
 
-  const newStationList = state.storedStations.slice(indexToRemove, 1)
   save('storedUserStations', JSON.stringify(newStationList))
   await getStations()
 }
 
 export async function deleteJourney(stationId: string) {
-  const indexToRemove = state.storedJourneys.findIndex(
-    (s: SanityJourney) => s.toStation === stationId
+  const filteredJourneys = state.storedJourneys.filter(
+    (s: SanityJourney) => s.toStation !== stationId
   )
 
-  const newJourneyList = state.storedJourneys.slice(indexToRemove)
-  save('storedUserJourneys', JSON.stringify(newJourneyList))
+  save('storedUserJourneys', JSON.stringify(filteredJourneys))
 
   await getStations()
 }

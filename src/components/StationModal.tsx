@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, Pressable, StyleSheet } from 'react-native'
+import { Dimensions, Pressable, StyleSheet, View } from 'react-native'
 import ModalView from 'react-native-modal'
 import { view } from '@risingstack/react-easy-state'
 import {
@@ -21,7 +21,7 @@ import Spacer from './Spacer'
 import { StationType } from 'src/lib/types'
 import HorizontalStation from './HorizontalStation'
 import { colors, fancyColors, shadow, toastConfig } from 'src/lib/constants'
-import { addStation } from 'src/lib/api'
+import { addStation, getStations } from 'src/lib/api'
 
 type Props = {
   isVisible: boolean
@@ -149,11 +149,13 @@ function StationModal({ isVisible, onClose }: Props) {
         </Pressable>
       </ListWrapper>
       <AnimatedSafeArea style={[styles.container, animatedStyle]}>
-        <TouchableOpacity
+        <Pressable
+          hitSlop={100}
           onPress={async () => {
             if (!selectedStation) return
 
             await addStation(selectedStation)
+            await getStations()
 
             Toast.show({
               text1: `${selectedStation.name} er lagt til`,
@@ -170,7 +172,7 @@ function StationModal({ isVisible, onClose }: Props) {
           <Text big medium>
             Legg til
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </AnimatedSafeArea>
     </ModalView>
   )
