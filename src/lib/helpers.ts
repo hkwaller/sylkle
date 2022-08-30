@@ -1,9 +1,9 @@
 import React from 'react'
-import * as SecureStore from 'expo-secure-store'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import GymIcon from 'src/icons/GymIcon'
 import HouseIcon from 'src/icons/HouseIcon'
 import WorkIcon from 'src/icons/WorkIcon'
-import { JourneyType, Location, LocationCoords, StationType } from './types'
+import { LocationCoords, StationType } from './types'
 
 export function getDistanceFromLatLng(
   lat1: number,
@@ -76,11 +76,11 @@ export function getNearestStations(
 }
 
 export async function save(key: string, value: string) {
-  await SecureStore.setItemAsync(key, value)
+  await AsyncStorage.setItem(key, value)
 }
 
 export async function getValueFor(key: string) {
-  let result = await SecureStore.getItemAsync(key)
+  let result = await AsyncStorage.getItem(key)
   if (result) {
     console.log("🔐 Here's your value 🔐 \n" + result)
     return result

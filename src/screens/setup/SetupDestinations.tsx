@@ -53,10 +53,10 @@ function SetupJourneys() {
           return (
             <>
               <View style={{ paddingLeft: 20 }} />
-              <TouchableOpacity style={styles.button}>
+              <View style={styles.button}>
                 <Header style={{ marginLeft: 0 }}>{item.name}</Header>
                 <Text>{item.toStation.name}</Text>
-              </TouchableOpacity>
+              </View>
             </>
           )
         }}
@@ -79,10 +79,6 @@ function SetupJourneys() {
               const storedJourneyToRemove = state.storedJourneys.find(
                 (journey) =>
                   journey.toStation === journeyToRemove.toStation.station_id
-              )
-              console.log(
-                '🚀 ~ file: SetupDestinations.tsx ~ line 83 ~ onPress={ ~ storedJourneyToRemove',
-                storedJourneyToRemove
               )
 
               await deleteJourney(storedJourneyToRemove.toStation)

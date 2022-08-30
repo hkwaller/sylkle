@@ -3,6 +3,7 @@ import { AppState, Dimensions, View } from 'react-native'
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { view } from '@risingstack/react-easy-state'
+import Iaphub from 'react-native-iaphub'
 import * as Font from 'expo-font'
 import * as Location from 'expo-location'
 import { SafeAreaView } from '@motify/components'
@@ -23,7 +24,8 @@ import TabBarAll from 'src/icons/TabBarAll'
 import Loading from 'src/components/Loading'
 import JourneyDetails from 'src/screens/JourneyDetails'
 import LogoBike from 'src/icons/LogoBike'
-import { getValueFor, save } from 'src/lib/helpers'
+import { getValueFor } from 'src/lib/helpers'
+import { apiKey, appId } from 'src/screens/token'
 
 const { height } = Dimensions.get('screen')
 
@@ -107,6 +109,17 @@ function App() {
         SansationRegular: require('./assets/fonts/Sansation_Regular.ttf'),
         SansationBold: require('./assets/fonts/Sansation_Bold.ttf'),
       })
+      const hasPurchased = await getValueFor('hasPurchased')
+
+      state.hasPurchased = JSON.parse(hasPurchased || 'false')
+
+      if (!hasPurchased) {
+        await Iaphub.init({
+          appId: appId,
+          apiKey: apiKey,
+          environment: 'production',
+        })
+      }
 
       setFontsLoaded(true)
     }

@@ -31,7 +31,7 @@ PODS:
   - EXPermissions (10.0.0):
     - UMCore
     - UMPermissionsInterface
-  - EXSecureStore (9.3.0):
+  - EXSecureStore (10.2.0):
     - UMCore
   - EXSplashScreen (0.8.1):
     - React-Core
@@ -294,8 +294,12 @@ PODS:
     - React-jsi (= 0.63.4)
   - RNCMaskedView (0.1.10):
     - React
+  - RNDeviceInfo (8.4.0):
+    - React-Core
   - RNGestureHandler (1.8.0):
     - React
+  - RNIap (7.5.0):
+    - React-Core
   - RNReanimated (2.0.0-rc.0):
     - DoubleConversion
     - FBLazyVector
@@ -394,7 +398,9 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
+  - RNIap (from `../node_modules/react-native-iap`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -505,8 +511,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
+  RNIap:
+    :path: "../node_modules/react-native-iap"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -556,7 +566,7 @@ SPEC CHECKSUMS:
   EXLinearGradient: c803fbd1aa974be038177b1e45524bc35759fe9c
   EXLocation: d55e2a37f61bcfb4eba9c813b3f4621d896c4c00
   EXPermissions: 17d4846ad1880f6891c74ae58ca1acb43e47ed47
-  EXSecureStore: 1b571851e6068b30b8ec097be848a04603c03bae
+  EXSecureStore: 1aa80d49a3a101418bbd2675e2a0d32dceea10c2
   EXSplashScreen: 8c7c1112ce7611a853486af4737fe2298eda7657
   EXSQLite: bda6a286dded0637bb312ee781239dcca163ff4b
   EXUpdates: 5124c03b19730078482a27b97fcb4718b06ca6b5
@@ -588,7 +598,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: ae4f914cfe8de7d4de95ae1ea6cc8f6315d73d9d
   ReactCommon: 73d79c7039f473b76db6ff7c6b159c478acbbb3b
   RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
+  RNDeviceInfo: 8a06046616c6b5c03787b04f265fa3b52b37c80b
   RNGestureHandler: 7a5833d0f788dbd107fbb913e09aa0c1ff333c39
+  RNIap: f632e0685e37759e1a63651868d38fd08efe9a87
   RNReanimated: b9c929bfff7dedc9c89ab1875f1c6151023358d9
   RNScreens: 3d682bcaba69a4f8e55543d90818704f34338db1
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e

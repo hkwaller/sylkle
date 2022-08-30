@@ -10,9 +10,12 @@ import SmallRoundedButton from 'src/components/SmallRoundedButton'
 import SetupStations from './setup/SetupStations'
 import SetupDestinations from './setup/SetupDestinations'
 import StationModal from 'src/components/StationModal'
+import BuyModal from 'src/components/BuyModal'
+import { state } from 'src/lib/state'
 
 function Setup() {
   const [modalVisible, setModalVisible] = useState(false)
+  const [buyModalVisible, setBuyModalVisible] = useState(false)
   const [stationModalVisible, setStationModalVisible] = useState(false)
 
   return (
@@ -27,7 +30,13 @@ function Setup() {
 
             <SmallRoundedButton
               title="Legg til"
-              onPress={() => setModalVisible(true)}
+              onPress={() => {
+                if (!state.hasPurchased && state.storedJourneys.length > 1) {
+                  setBuyModalVisible(true)
+                } else {
+                  setModalVisible(true)
+                }
+              }}
             />
           </View>
 
@@ -38,13 +47,23 @@ function Setup() {
 
             <SmallRoundedButton
               title="Legg til"
-              onPress={() => setStationModalVisible(true)}
+              onPress={() => {
+                if (!state.hasPurchased && state.storedStations.length > 2) {
+                  setBuyModalVisible(true)
+                } else {
+                  setStationModalVisible(true)
+                }
+              }}
             />
           </View>
 
           <SetupStations />
         </ScrollView>
       </SafeAreaView>
+      <BuyModal
+        isVisible={buyModalVisible}
+        onClose={() => setBuyModalVisible(false)}
+      />
       <DestinationModal
         isVisible={modalVisible}
         onClose={() => {

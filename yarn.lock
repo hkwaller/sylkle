@@ -3999,6 +3999,11 @@ domutils@^1.7.0:
     dom-serializer "0"
     domelementtype "1"
 
+dooboolab-welcome@1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/dooboolab-welcome/-/dooboolab-welcome-1.3.2.tgz#4928595312f0429b4ea1b485ba8767bae6acdab7"
+  integrity sha512-2NbMaIIURElxEf/UAoVUFlXrO+7n/FRhLCiQlk4fkbGRh9cJ3/f8VEMPveR9m4Ug2l2Zey+UCXjd6EcBqHJ5bw==
+
 ecc-jsbn@~0.1.1:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ecc-jsbn/-/ecc-jsbn-0.1.2.tgz#3a83a904e54353287874c564b7549386849a98c9"
@@ -4602,6 +4607,11 @@ fbjs@^3.0.0:
     promise "^7.1.1"
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
+
+fetch-retry@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/fetch-retry/-/fetch-retry-4.1.0.tgz#853ce17e3b23383bfeb3d34a1aa3dfb96a480d11"
+  integrity sha512-FUc9XZuhyE3ka3m53lec29PXVhdRf59QG01nE+OZdfl0M/R0E7Pk6k6qeWzHhX1pHl/f2JPA97sjjbHRgSg/9A==
 
 figures@^2.0.0:
   version "2.0.0"
@@ -7677,10 +7687,20 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
+react-native-device-info@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.4.0.tgz#c434af5c928c7f8e2c3b1a1ca07061b83d50ccd4"
+  integrity sha512-/ZHDJajkEmjNmjvm52o7pqIpR2uKocD66iH00GMe5QpUdM9u9vDxS2hgcRbgrVaKEfA5IRIBctpalYMrrbQU+Q==
+
 react-native-draggable-flatlist@^2.6.2:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/react-native-draggable-flatlist/-/react-native-draggable-flatlist-2.6.2.tgz#d1445fd52e75bc4f4ebbd832a8bc4525cebb8302"
   integrity sha512-0IBS1lgw137FDaDLccUidHXYu/6PbnIO1R0IXYVfxtNOvhFLfJyGOY526vmO72Sf/ch9yayED4+DaQWGBOqNyw==
+
+react-native-fetch-polyfill@1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-fetch-polyfill/-/react-native-fetch-polyfill-1.1.3.tgz#a02d9069a2f7108ca0b70b8469085c67cc02949c"
+  integrity sha512-zr5yXQftuGq+ABGa3n4ZE+vkL1lBsMSePkRINm3/6vlpbwnLXYoijwazTO/W8GjsV4LAgGmzuieZxKO/NxW19A==
 
 react-native-gesture-handler@~1.8.0:
   version "1.8.0"
@@ -7691,6 +7711,21 @@ react-native-gesture-handler@~1.8.0:
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
     prop-types "^15.7.2"
+
+react-native-iap@^7.5.0:
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-iap/-/react-native-iap-7.5.0.tgz#86d0ccc4cc6a2eabc0470993921a45aec603392c"
+  integrity sha512-3iy+q3m7OAjh2+7LA53151Y+1Jmix76NMWcMXJdax/yw1dB7YWQ47eHkY3PLhShp+LO+XHZxv/iaPVtkkeiPwA==
+  dependencies:
+    dooboolab-welcome "1.3.2"
+
+react-native-iaphub@^6.2.6:
+  version "6.2.6"
+  resolved "https://registry.yarnpkg.com/react-native-iaphub/-/react-native-iaphub-6.2.6.tgz#887521d15f7129d80fdfaa099c6098c8d4b4d62e"
+  integrity sha512-kHoZ6OgGkMdYNvHf7sqTuuLw2LmOXlNqLprWXJqiZnNN9DfwuhUosr3BqqA/6jTvAwBkaD+bCR3D+kDTbWc3jQ==
+  dependencies:
+    fetch-retry "4.1.0"
+    react-native-fetch-polyfill "1.1.3"
 
 react-native-iphone-x-helper@^1.3.0:
   version "1.3.1"

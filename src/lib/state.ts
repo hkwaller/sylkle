@@ -10,6 +10,7 @@ export type State = {
   loaded: boolean
   storedStations: any[]
   storedJourneys: any[]
+  hasPurchased: boolean
 }
 
 export const state = store<State>({
@@ -19,6 +20,7 @@ export const state = store<State>({
   userJourneys: [],
   storedStations: [],
   storedJourneys: [],
+  hasPurchased: false,
   location: {
     coords: {
       latitude: 60.0,
